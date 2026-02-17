@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Ventas - La Chefa</title>
+</head>
+<body>
+    <header>
+        <h1 th:text="${titulo}">Historial de Ventas</h1>
+        <a th:href="@{/productos/catalogo}">⬅ Volver al Inventario</a>
+    </header>
+    <hr>
+    <main>
+        <table border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
+            <thead style="background-color: #e9ecef;">
+                <tr>
+                    <th>Fecha y Hora</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unit.</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="v : ${ventas}">
+                    <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${v.producto.nombre}" style="font-weight: bold;"></td>
+                    <td th:text="${v.cantidad}"></td>
+                    <td th:text="${'$ ' + v.precioVenta}"></td>
+                    <td th:text="${'$ ' + v.totalVenta}" style="font-weight: bold; color: green;"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">TOTAL INGRESOS:</td>
+                    <td th:text="${'$ ' + granTotal}" style="color: green; font-weight: bold;"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </main>
+</body>
+</html>

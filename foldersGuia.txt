@@ -1,0 +1,14 @@
+src/main/java/
+└── cl/
+    └── felorf/
+        └── lachefa/
+            └── ecommerce/
+                ├── LachefaEcommerceApplication.java  <-- Clase Principal (Main)
+                │
+                ├── config/         # Configuraciones de beans y seguridad futura.
+                ├── controllers/    # Clases @Controller (manejo de rutas y lógica web).
+                ├── dtos/           # Objetos para transferencia de datos (Data Transfer Objects).
+                ├── models/         # Entidades @Entity (Salsa, Encurtido, Usuario).
+                ├── repositories/   # Interfaces que heredan de JpaRepository.
+                ├── services/       # Clases @Service con lógica de negocio y @Transactional.
+                └── security/       # Lógica específica de autenticación/autorización.

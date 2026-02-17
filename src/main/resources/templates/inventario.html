@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Gestión La Chefa</title>
+</head>
+<body>
+
+    <header>
+        <h1 th:text="${titulo}">Panel de Inventario</h1>
+        <nav>
+            <a th:href="@{/productos/nuevo}" style="font-weight: bold;">+ Registrar Nueva Salsa</a> 
+            | 
+            <a th:href="@{/ventas/historial}" style="color: blue;"> Ver Historial de Ventas</a>
+        </nav>
+    </header>
+    
+    <hr>
+
+    <section style="margin-bottom: 20px;">
+        <form th:action="@{/productos/catalogo}" method="get">
+            <input type="text" name="termino" 
+                   th:value="${termino}" 
+                   placeholder="Buscar por nombre..." 
+                   style="width: 250px; padding: 5px;">
+            <button type="submit">🔍 Buscar</button>
+            
+            <a th:href="@{/productos/catalogo}" th:if="${termino != null && termino != ''}">Limpiar</a>
+        </form>
+    </section>
+
+    <table border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Acciones</th> 
+            </tr>
+            
+        </thead>
+        <tbody>
+    <tr th:each="p : ${productos}">
+        <td th:text="${p.id}"></td>
+        <td>
+            <span th:text="${p.nombre}" style="font-weight: bold;"></span>
+            
+            <span th:if="${masVendidoId != null and p.id == masVendidoId}" 
+                  style="background-color: #FFD700; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 8px; font-weight: bold;">
+                  🔥 TOP VENTAS
+            </span>
+
+            <span th:if="${menosVendidoId != null and p.id == menosVendidoId and masVendidoId != menosVendidoId}" 
+                  style="background-color: #FF8C00; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 8px;">
+                  🐢 LENTO MOVIMIENTO
+            </span>
+        </td>
+	        <td th:text="${p.descripcion}"></td>
+	        
+	        <td th:text="${p.stock}" 
+	            th:style="${p.stock < 10} ? 'color: red; font-weight: bold;' : ''">
+	        </td>
+	        
+	        <td th:text="${'$ ' + p.precio}"></td>
+	        
+	        <td>
+	            <a th:href="@{/ventas/vender/{id}(id=${p.id})}" style="color: green; font-weight: bold;">[ Venta -1 ]</a> |
+	            <a th:href="@{/productos/editar/{id}(id=${p.id})}">Editar</a> | 
+	            <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" style="color: red;"
+	               onclick="return confirm('¿Quitar del catálogo?')">Eliminar</a>
+        </td>
+    </tr>
+	</tbody>
+    </table>
+    
+    <div th:if="${#lists.isEmpty(productos)}" style="margin-top: 20px; color: #666;">
+        <p th:if="${termino == null}">El inventario está vacío actualmente.</p>
+        <p th:if="${termino != null}">No se encontraron salsas con el nombre: <strong th:text="${termino}"></strong></p>
+        <a th:href="@{/productos/catalogo}" th:if="${termino != null}">Ver todo el catálogo</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,2 @@
+INSERT INTO productos (nombre, descripcion, stock, precio) VALUES ('Habanero Infierno', 'Extra picante', 50, 4500);
+INSERT INTO productos (nombre, descripcion, stock, precio) VALUES ('Jalapeño Verde', 'Picante suave', 100, 3800);

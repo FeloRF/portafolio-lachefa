@@ -2,41 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${titulo}">Ventas - La Chefa</title>
+    <title th:text="${titulo}">Historial de Ventas</title>
 </head>
-<body>
+<body style="font-family: sans-serif; margin: 20px;">
+
     <header>
         <h1 th:text="${titulo}">Historial de Ventas</h1>
-        <a th:href="@{/productos/catalogo}">⬅ Volver al Inventario</a>
+        <nav style="margin-bottom: 20px;">
+            <a th:href="@{/productos/catalogo}" style="font-weight: bold; color: #333;">← Volver al Catálogo</a>
+        </nav>
     </header>
-    <hr>
-    <main>
-        <table border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
-            <thead style="background-color: #e9ecef;">
-                <tr>
-                    <th>Fecha y Hora</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unit.</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="v : ${ventas}">
-                    <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${v.producto.nombre}" style="font-weight: bold;"></td>
-                    <td th:text="${v.cantidad}"></td>
-                    <td th:text="${'$ ' + v.precioVenta}"></td>
-                    <td th:text="${'$ ' + v.totalVenta}" style="font-weight: bold; color: green;"></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4" style="text-align: right; font-weight: bold;">TOTAL INGRESOS:</td>
-                    <td th:text="${'$ ' + granTotal}" style="color: green; font-weight: bold;"></td>
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+
+    <section style="background: #f4f4f4; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <span style="font-weight: bold; margin-right: 10px;">Filtrar periodo:</span>
+        <a th:href="@{/ventas/historial(periodo='hoy')}" 
+           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px;">Hoy</a>
+        
+        <a th:href="@{/ventas/historial(periodo='semana')}" 
+           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px; margin-left: 5px;">Esta Semana</a>
+        
+        <a th:href="@{/ventas/historial(periodo='mes')}" 
+           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px; margin-left: 5px;">Este Mes</a>
+        
+        <a th:href="@{/ventas/historial}" 
+           style="padding: 5px 10px; background: #333; color: #fff; border: 1px solid #333; text-decoration: none; border-radius: 4px; margin-left: 5px;">Ver Todo</a>
+    </section>
+
+    <div style="margin-bottom: 20px; padding: 15px; border: 2px solid #eef9f0; background: #f0fdf4; display: inline-block; border-radius: 8px;">
+        <h3 style="margin: 0; color: #166534;">💰 Total Ingresos en este Periodo:</h3>
+        <p style="font-size: 1.8em; font-weight: bold; margin: 10px 0; color: #15803d;" 
+           th:text="${'$ ' + granTotal}"></p>
+    </div>
+
+    <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="background-color: #333; color: #fff;">
+                <th style="padding: 10px;">Fecha y Hora</th>
+                <th style="padding: 10px;">Producto</th>
+                <th style="padding: 10px;">Cliente</th>
+                <th style="padding: 10px;">Cantidad</th>
+                <th style="padding: 10px;">Precio Unit.</th>
+                <th style="padding: 10px;">Total Venta</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="v : ${ventas}">
+                <td style="padding: 10px;" th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                
+                <td style="padding: 10px;">
+                    <strong th:text="${v.producto.nombre}"></strong>
+                </td>
+                
+                <td style="padding: 10px;">
+                    <span th:text="${v.cliente != null ? v.cliente.nombreCompleto : 'Venta Rápida'}" 
+                          th:style="${v.cliente == null ? 'color: #999; font-style: italic;' : 'color: #1d4ed8; font-weight: bold;'}"></span>
+                </td>
+                
+                <td style="padding: 10px;" th:text="${v.cantidad}"></td>
+                <td style="padding: 10px;" th:text="${'$ ' + v.precioVenta}"></td>
+                <td style="padding: 10px; font-weight: bold;" th:text="${'$ ' + v.totalVenta}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${#lists.isEmpty(ventas)}" style="margin-top: 30px; text-align: center; color: #666;">
+        <p>No se registraron movimientos en el periodo seleccionado.</p>
+    </div>
+
 </body>
 </html>

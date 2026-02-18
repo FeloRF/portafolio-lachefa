@@ -3,8 +3,11 @@ package cl.felorf.lachefa.portafoliobootcam.repositories;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import cl.felorf.lachefa.portafoliobootcam.models.Venta;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,4 +38,7 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
 	@Query("SELECT v.producto.id, SUM(v.cantidad) FROM Venta v GROUP BY v.producto.id ORDER BY SUM(v.cantidad) DESC")
 	List<Object[]> obtenerRankingVentas();
+	
+	@Query("SELECT v FROM Venta v WHERE v.fecha >= :fechaInicio ORDER BY v.fecha DESC")
+	List<Venta> buscarVentasRecientes(@Param("fechaInicio") LocalDateTime fechaInicio);
 }

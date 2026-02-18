@@ -74,6 +74,22 @@ public class ProductoService {
                 .filter(p -> p.isActivo())
                 .toList();
     }
+    
+    @Transactional(readOnly = true)
+    public List<Producto> listarInactivos() {
+        // Usamos el repositorio para traer los que tienen activo = false
+        return productoRepository.findAll().stream()
+                .filter(p -> !p.isActivo())
+                .toList();
+    }
+
+    @Transactional
+    public void restaurar(Long id) {
+        productoRepository.findById(id).ifPresent(p -> {
+            p.setActivo(true);
+            productoRepository.save(p);
+        });
+    }
 
     /**
      * Proceso de Venta: Descuenta stock, genera un registro histórico de forma atómica y crea un registro de los productos 
@@ -99,7 +115,7 @@ public class ProductoService {
 
         // 4. CREAMOS EL REGISTRO DE VENTA (La huella digital de la transacción)
         // Usamos el constructor Pro que creamos antes que captura precio y fecha automáticamente.
-        Venta nuevaVenta = new Venta(producto, cantidad);
+        Venta nuevaVenta = new Venta(producto, cantidad, null);
         ventaRepository.save(nuevaVenta);
         
         // Al terminar el método, Spring hace el "Commit" de ambas operaciones.
@@ -120,6 +136,28 @@ public class ProductoService {
             resultados.put("menosVendido", (Long) ranking.get(ranking.size() - 1)[0]);
         }
         return resultados;
+    }
+    
+    /**
+     * Calcula el valor monetario total del inventario activo.
+     * @return Suma de (precio * stock) de todos los productos vigentes.
+     */
+    @Transactional(readOnly = true)
+    public Integer calcularValorInventario() {
+        return listarActivos().stream()
+                .mapToInt(p -> p.getPrecio() * p.getStock())
+                .sum();
+    }
+    
+    /**
+     * Cuenta cuántos productos activos tienen un stock por debajo del límite crítico (5 unidades).
+     * @return Cantidad de productos en riesgo.
+     */
+    @Transactional(readOnly = true)
+    public long contarProductosEnLimiteStock() {
+        return listarActivos().stream()
+                .filter(p -> p.getStock() <= 5)
+                .count();
     }
     
     

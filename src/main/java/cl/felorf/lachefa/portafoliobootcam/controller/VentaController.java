@@ -4,94 +4,76 @@ import cl.felorf.lachefa.portafoliobootcam.models.Venta;
 import cl.felorf.lachefa.portafoliobootcam.repositories.VentaRepository;
 import cl.felorf.lachefa.portafoliobootcam.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+// IMPORT CORRETO:
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * Controlador de Ventas: Gestiona el flujo transaccional y el historial financiero.
- * Centraliza las operaciones que afectan el patrimonio de la Pyme.
+ * Implementa filtros temporales para la toma de decisiones administrativas.
  */
 @Controller
 @RequestMapping("/ventas")
 public class VentaController {
 	
 	@Autowired
-	private ProductoService productoService; //Lógica de descuento de stock.
+	private ProductoService productoService; 
+    
 	@Autowired
-	private VentaRepository ventaRepository; // Consulta historial.
+	private VentaRepository ventaRepository; 
 	
 	/**
-     * Procesa una venta rápida desde el catálogo.
-     * Mueve la lógica de venta aquí para mantener el orden de responsabilidades.
-     * @param id ID del producto vendido.
-     * @return Redirección al catálogo de productos.
+     * Procesa una venta rápida.
+     * @param id ID del producto.
+     * @return Redirección al catálogo.
      */
-	
 	@GetMapping("/vender/{id}")
     public String procesarVenta(@PathVariable Long id) {
         try {
-            // Ejecutamos la lógica transaccional (Descuento + Registro de Venta)
             productoService.descontarStock(id, 1);
         } catch (RuntimeException e) {
-            // Log de error en consola si algo falla (ej: stock insuficiente)
             System.err.println("Error en transacción: " + e.getMessage());
         }
-        // Redirigimos de vuelta al inventario (está en otro controlador)
         return "redirect:/productos/catalogo";
     }
 	
 	/**
-     * Renderiza el historial de transacciones con el cálculo de ingresos totales.
-     * @param model Contenedor de datos para Thymeleaf.
-     * @return Vista 'historial.html'.
+     * Renderiza el historial con filtros de tiempo (Hoy, Semana, Mes).
      */
 	@GetMapping("/historial")
-    public String verHistorial(Model model) {
-		
-		//1.Obtenemos las ventas ordenadas por fecha
-		List<Venta> ventas = ventaRepository.findAllByOrderByFechaDesc();
-		
-		// 2. Cálculo de Gran Total (Streams)
-        // Sumamos el resultado de getTotalVenta() de cada registro.
-        int granTotal = ventas.stream()
-                .mapToInt(Venta::getTotalVenta)
-                .sum();
+	public String verHistorial(@RequestParam(name = "periodo", required = false) String periodo, Model model) {
+	    LocalDateTime inicio = null;
+	    
+	    if ("hoy".equals(periodo)) {
+            // Desde las 00:00 de hoy
+	        inicio = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+	    } else if ("semana".equals(periodo)) {
+	        inicio = LocalDateTime.now().minusWeeks(1);
+	    } else if ("mes".equals(periodo)) {
+	        inicio = LocalDateTime.now().minusMonths(1);
+	    }
 
-        // 3. Empaquetado de datos para la vista
-        model.addAttribute("ventas", ventas);
+	    List<Venta> ventas;
+	    if (inicio != null) {
+            // Usamos el query personalizado del repositorio
+	        ventas = ventaRepository.buscarVentasRecientes(inicio);
+	    } else {
+            // Si no hay filtro, traemos todo ordenado por fecha descendente
+	        ventas = ventaRepository.findAll(Sort.by(Sort.Direction.DESC, "fecha"));
+	    }
+
+        // Calculamos el gran total del periodo para el dashboard
+        int granTotal = ventas.stream().mapToInt(Venta::getTotalVenta).sum();
+
+	    model.addAttribute("ventas", ventas);
         model.addAttribute("granTotal", granTotal);
-        model.addAttribute("titulo", "Libro de Ventas - La Chefa");
-        
-        return "historial";
-    }
+	    model.addAttribute("titulo", "Historial de Ventas - Filtro: " + (periodo != null ? periodo : "Todos"));
+	    
+	    return "historial";
+	}
 }
-		
-		
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">La Chefa - Home</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; background-color: #fdf2f2; padding: 50px;">
+
+    <header style="margin-bottom: 50px;">
+        <h1 style="color: #e11d48; font-size: 3em;"> LA CHEFA</h1>
+        <p style="font-size: 1.2em; color: #4b5563;">Salsas artesanales con el picor que tu vida necesita.</p>
+    </header>
+
+    <main style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+        
+        <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 250px;">
+            <h3>🛒 TIENDA</h3>
+            <p>Mira nuestras salsas y compra como invitado o regístrate.</p>
+            <a th:href="@{/catalogoLaChefa}" style="display: block; background: #e11d48; color: white; padding: 10px; text-decoration: none; border-radius: 5px; margin-top: 10px;">Ver Catálogo</a>
+            <a th:href="@{/login}" style="display: block; margin-top: 15px; color: #e11d48; font-weight: bold;">Iniciar Sesión Cliente</a>
+        </div>
+
+        <div style="background: #1e293b; color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 250px;">
+            <h3>ADMINISTRACIÓN</h3>
+            <p>Gestión de stock, inventario y reportes de ventas.</p>
+            <a th:href="@{/login}" style="display: block; background: #475569; color: white; padding: 10px; text-decoration: none; border-radius: 5px; margin-top: 40px;">Acceso Admin</a>
+        </div>
+
+    </main>
+
+    <footer style="margin-top: 50px; color: #9ca3af;">
+        <p>&copy; 2026 La Chefa - Proyecto Bootcamp Felipe Rojas</p>
+    </footer>
+
+</body>
+</html>

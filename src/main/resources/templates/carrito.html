@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Tu Carrito - La Chefa</title>
+</head>
+<body style="font-family: sans-serif; margin: 20px; color: #333;">
+
+    <header>
+        <h1 th:text="${titulo}">Resumen de tu Compra</h1>
+        <nav style="margin-bottom: 20px;">
+            <a th:href="@{/catalogoLaChefa}" style="color: #1d4ed8; text-decoration: none; font-weight: bold;">
+			    ← Continuar Comprando
+			</a>
+			
+			
+        </nav>
+    </header>
+
+    <hr>
+
+    <div th:if="${not #lists.isEmpty(items)}">
+        <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; margin-top: 20px;">
+            <thead>
+                <tr style="background-color: #f8fafc;">
+                    <th style="padding: 12px;">Producto</th>
+                    <th style="padding: 12px;">Precio Unitario</th>
+                    <th style="padding: 12px;">Cantidad</th>
+                    <th style="padding: 12px;">Subtotal</th>
+                    <th style="padding: 12px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${items}">
+                    <td style="padding: 12px;">
+                        <strong th:text="${item.producto.nombre}"></strong><br>
+                        <small th:text="${item.producto.descripcion}" style="color: #666;"></small>
+                    </td>
+                    <td style="padding: 12px;" th:text="${'$ ' + item.producto.precio}"></td>
+                    <td style="padding: 12px;" th:text="${item.cantidad}"></td>
+                    <td style="padding: 12px; font-weight: bold;" th:text="${'$ ' + item.subtotal}"></td>
+                    <td style="padding: 12px;">
+                        <a th:href="@{/carrito/eliminar/{id}(id=${item.producto.id})}" 
+                           style="color: #dc2626; text-decoration: none;">❌ Quitar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <section style="margin-top: 30px; display: flex; justify-content: flex-end;">
+            <div style="background: #f1f5f9; padding: 20px; border-radius: 8px; min-width: 300px; text-align: right;">
+                <h3 style="margin: 0; color: #475569;">Total a Pagar:</h3>
+                <p style="font-size: 2em; font-weight: bold; margin: 10px 0; color: #1e293b;" 
+                   th:text="${'$ ' + total}"></p>
+                
+                <div style="margin-top: 20px;">
+                    <a th:href="@{/catalogoLaChefa}" 
+                       style="margin-right: 15px; color: #64748b; text-decoration: none;"
+                       onclick="return confirm('¿Vaciar toda tu bolsa de compras?')">Vaciar Carrito</a>
+                    
+                    <a th:href="@{/checkout/confirmar}" 
+                       style="background: #16a34a; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 1.1em;">
+                        Proceder al Pago
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div th:if="${#lists.isEmpty(items)}" style="text-align: center; margin-top: 50px; padding: 40px; border: 2px dashed #cbd5e1; border-radius: 12px;">
+        <h2 style="color: #64748b;">🛒 Tu bolsa está vacía</h2>
+        <p>Parece que aún no has elegido ninguna de nuestras salsas artesanales.</p>
+        <br>
+        <a th:href="@{/catalogoLaChefa}" 
+			   style="background: #1d4ed8; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+			   Ver el Catálogo 
+			</a>
+    </div>
+
+</body>
+</html>

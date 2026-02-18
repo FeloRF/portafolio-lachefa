@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>La Chefa - Catálogo</title>
+</head>
+<body>
+
+<section style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+    <div th:each="p : ${productos}" style="border: 1px solid #ddd; padding: 15px; border-radius: 10px;">
+        <h3 th:text="${p.nombre}"></h3>
+        <p th:text="${p.descripcion}"></p>
+        
+        <p>Picor: 
+            <span th:each="i : ${#numbers.sequence(1, p.nivelPicor)}">🌶️</span>
+        </p>
+        
+        <p style="font-size: 1.2em; font-weight: bold;" th:text="${'$ ' + p.precio}"></p>
+        
+        <a th:href="@{/carrito/agregar/{id}(id=${p.id})}" 
+           style="background: #e11d48; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
+           🛒 Añadir al Carrito
+        </a>
+    </div>
+</section>
+
+</body>
+</html>

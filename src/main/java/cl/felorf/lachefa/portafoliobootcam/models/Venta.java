@@ -3,117 +3,83 @@ package cl.felorf.lachefa.portafoliobootcam.models;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-
 /**
- * Entidad que registar el historial de compras
- * Almacena el detalle de cada producto vendido
+ * Entidad que registra el historial de compras.
+ * Almacena el detalle de cada producto vendido y lo vincula a un cliente si existe.
  * * @author Felipe Rojas Flores
- * @version 1.0
- * */
+ * @version 1.1
+ */
 @Entity
 @Table(name="ventas")
 public class Venta {
 	
-	/** Indentificador de cada transaccion */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	/**Relacion MUCHOS A UNO (M:N) 
-	 * Fetch.lazy mejorar el rendimiento al no cargar el producto al menos que sea necesario
+	/** * Relación Muchos a Uno: Varias ventas pueden ser del mismo producto.
 	 */
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name= "producto_id", nullable = false)
-private Producto producto;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name= "producto_id", nullable = false)
+	private Producto producto;
 
-/** Cantidad de unidades vendidas en esta operacion */
-@Column(nullable = false)
-private Integer cantidad;
+	/** * Relación Muchos a Uno: Varias ventas pueden pertenecer a un mismo usuario.
+	 * nullable = true permite que sigan existiendo ventas sin registro (invitados).
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "usuario_id", nullable = true)
+	private Usuario cliente;
 
-/** * "Snapdhot" del precio: Guardamos el precio al que se vendio.
- * Evita que el historial cambie si el precio del producto sube o baja despues
- */
-@Column(nullable = false)
-private Integer precioVenta;
+	@Column(nullable = false)
+	private Integer cantidad;
 
-/** Registro de tiempo exacto de la operacion */
-private LocalDateTime fecha;
+	@Column(nullable = false)
+	private Integer precioVenta;
 
-/**
- * Constructor por defecto (Requerido por JPA)
- */
-public Venta() {
-}
+	private LocalDateTime fecha;
 
-/**
- * Constructor Pro: Inicializa la venta con la estampa de tiempo automatica
- */
-public Venta(Producto producto, Integer cantidad) {
-    this.producto = producto;
-    this.cantidad = cantidad;
-    this.precioVenta = producto.getPrecio(); // Capturamos el precio actual del producto
-    this.fecha = LocalDateTime.now();        // Fecha y hora del sistema
+	// Constructor por defecto
+	public Venta() {
 	}
 
-//=================================
-// MÉTODO DE  CÁLCULO DINÁMICO
-// ================================
-/**@return El monto total de esta venta (Precio x Cantidad) */
-public Integer getTotalVentas() {
-	return this.precioVenta * this.cantidad;
+	// Constructor Pro (Venta rápida/Carrito)
+	public Venta(Producto producto, Integer cantidad, Usuario cliente) {
+		this.producto = producto;
+		this.cantidad = cantidad;
+		this.cliente = cliente;
+		this.precioVenta = producto.getPrecio(); 
+		this.fecha = LocalDateTime.now();
 	}
 
-/** @return El monto total de la venta (Preciio * cantidad) */
-public Integer getTotalVenta() {
-	return this.precioVenta * this.cantidad;
+	// ============================================
+	// MÉTODO DE CÁLCULO DINÁMICO
+	// ============================================
 	
-// ============================================
-// GETTERS Y SETTERS (Acceso Encapsulado)
-// ============================================
-}
+	/** @return El monto total de la venta (Precio * cantidad) */
+	public Integer getTotalVenta() {
+		return this.precioVenta * this.cantidad;
+	}
 
-public Long getId() {
-	return id;
-}
+	// ============================================
+	// GETTERS Y SETTERS
+	// ============================================
 
-public void setId(Long id) {
-	this.id = id;
-}
+	public Long getId() { return id; }
+	public void setId(Long id) { this.id = id; }
 
-public Producto getProducto() {
-	return producto;
-}
+	public Producto getProducto() { return producto; }
+	public void setProducto(Producto producto) { this.producto = producto; }
 
-public void setProducto(Producto producto) {
-	this.producto = producto;
-}
+	public Usuario getCliente() { return cliente; }
+	public void setCliente(Usuario cliente) { this.cliente = cliente; }
 
-public Integer getCantidad() {
-	return cantidad;
-}
+	public Integer getCantidad() { return cantidad; }
+	public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
 
-public void setCantidad(Integer cantidad) {
-	this.cantidad = cantidad;
-}
+	public Integer getPrecioVenta() { return precioVenta; }
+	public void setPrecioVenta(Integer precioVenta) { this.precioVenta = precioVenta; }
 
-public Integer getPrecioVenta() {
-	return precioVenta;
-}
-
-public void setPrecioVenta(Integer precioVenta) {
-	this.precioVenta = precioVenta;
-}
-
-public LocalDateTime getFecha() {
-	return fecha;
-}
-
-public void setFecha(LocalDateTime fecha) {
-	this.fecha = fecha;
-}
-
-
+	public LocalDateTime getFecha() { return fecha; }
+	public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 
 }
-	
-

@@ -7,32 +7,43 @@
 <body>
     <h1 th:text="${titulo}">Nuevo Producto</h1>
 
-    <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
-        
-        <div>
-            <label>Nombre de la Salsa:</label>
-            <input type="text" th:field="*{nombre}" />
-            <small th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" style="color:red;"></small>
-        </div>
+   <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
+    
+    <div>
+        <label>Nombre de la Salsa:</label><br>
+        <input type="text" th:field="*{nombre}" required>
+    </div>
 
-        <div>
-            <label>Descripción / Nivel de Picante:</label>
-            <textarea th:field="*{descripcion}"></textarea>
-        </div>
+    <div style="margin-top: 15px;">
+        <label>Descripción del Sabor:</label><br>
+        <textarea th:field="*{descripcion}" rows="3" style="width: 300px;" 
+                  placeholder="Ej: Toques ahumados con base de tomate..."></textarea>
+    </div>
 
-        <div>
-            <label>Stock Inicial:</label>
-            <input type="number" th:field="*{stock}" />
-            <small th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}" style="color:red;"></small>
-        </div>
+    <div style="margin-top: 15px;">
+        <label>Nivel de Picante:</label><br>
+        <select th:field="*{nivelPicor}" style="padding: 5px; width: 200px;">
+            <option value="0">0 - No pica (Suave)</option>
+            <option value="1">1 - Apenas pica</option>
+            <option value="2">2 - Picante medio</option>
+            <option value="3">3 - Picante fuerte</option>
+            <option value="4">4 - Muy picante</option>
+            <option value="5">5 - ¡Extra Picante! 🔥</option>
+        </select>
+    </div>
 
-        <div>
-            <label>Precio:</label>
-            <input type="number" th:field="*{precio}" />
-        </div>
+    <div style="margin-top: 15px;">
+        <label>Stock Inicial:</label>
+        <input type="number" th:field="*{stock}" required>
+    </div>
+    
+    <div style="margin-top: 15px;">
+        <label>Precio:</label>
+        <input type="number" th:field="*{precio}" required>
+    </div>
 
-        <button type="submit">¡Cargar al Inventario!</button>
-    </form>
+    <button type="submit" style="margin-top: 20px; padding: 10px;">¡Cargar al Inventario!</button>
+</form>
     
     <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
     <input type="hidden" th:field="*{id}" />

@@ -22,4 +22,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
      * @return Lista de productos que contienen el texto, sin importar mayúsculas.
      */
     List<Producto> findByNombreContainingIgnoreCaseAndActivoTrue(String nombre);
+    List<Producto> findByNivelPicorBetween(Integer min, Integer max); // nivel de picor
 }

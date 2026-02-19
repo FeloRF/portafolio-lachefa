@@ -2,12 +2,12 @@ package cl.felorf.lachefa.portafoliobootcam.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList; // IMPORTANTE: Faltaba este
+import java.util.List;      // IMPORTANTE: Faltaba este
 
 /**
- * Entidad que registra el historial de compras.
- * Almacena el detalle de cada producto vendido y lo vincula a un cliente si existe.
- * * @author Felipe Rojas Flores
- * @version 1.1
+ * Entidad que registra el encabezado de una venta.
+ * Vincula al cliente con el total de la compra y su desglose de productos.
  */
 @Entity
 @Table(name="ventas")
@@ -16,70 +16,41 @@ public class Venta {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	/** * Relación Muchos a Uno: Varias ventas pueden ser del mismo producto.
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name= "producto_id", nullable = false)
-	private Producto producto;
 
-	/** * Relación Muchos a Uno: Varias ventas pueden pertenecer a un mismo usuario.
-	 * nullable = true permite que sigan existiendo ventas sin registro (invitados).
-	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usuario_id", nullable = true)
 	private Usuario cliente;
+	
+	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DetalleVenta> detalles = new ArrayList<>();
 
-	@Column(nullable = false)
-	private Integer cantidad;
+	private Integer total; // El monto final de la compra
 
-	@Column(nullable = false)
-	private Integer precioVenta;
+	private LocalDateTime fecha = LocalDateTime.now();
 
-	private LocalDateTime fecha;
-
-	// Constructor por defecto
+	// ============================================
+	// CONSTRUCTORES
+	// ============================================
+	
 	public Venta() {
 	}
 
-	// Constructor Pro (Venta rápida/Carrito)
-	public Venta(Producto producto, Integer cantidad, Usuario cliente) {
-		this.producto = producto;
-		this.cantidad = cantidad;
-		this.cliente = cliente;
-		this.precioVenta = producto.getPrecio(); 
-		this.fecha = LocalDateTime.now();
-	}
-
 	// ============================================
-	// MÉTODO DE CÁLCULO DINÁMICO
-	// ============================================
-	
-	/** @return El monto total de la venta (Precio * cantidad) */
-	public Integer getTotalVenta() {
-		return this.precioVenta * this.cantidad;
-	}
-
-	// ============================================
-	// GETTERS Y SETTERS
+	// GETTERS Y SETTERS (Para el CheckoutController)
 	// ============================================
 
 	public Long getId() { return id; }
 	public void setId(Long id) { this.id = id; }
 
-	public Producto getProducto() { return producto; }
-	public void setProducto(Producto producto) { this.producto = producto; }
-
 	public Usuario getCliente() { return cliente; }
 	public void setCliente(Usuario cliente) { this.cliente = cliente; }
 
-	public Integer getCantidad() { return cantidad; }
-	public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+	public List<DetalleVenta> getDetalles() { return detalles; }
+	public void setDetalles(List<DetalleVenta> detalles) { this.detalles = detalles; }
 
-	public Integer getPrecioVenta() { return precioVenta; }
-	public void setPrecioVenta(Integer precioVenta) { this.precioVenta = precioVenta; }
+	public Integer getTotal() { return total; }
+	public void setTotal(Integer total) { this.total = total; }
 
 	public LocalDateTime getFecha() { return fecha; }
 	public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
-
 }

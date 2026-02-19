@@ -1,8 +1,11 @@
 package cl.felorf.lachefa.portafoliobootcam.repositories;
 
+import cl.felorf.lachefa.portafoliobootcam.models.Rol;
 import cl.felorf.lachefa.portafoliobootcam.models.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -12,19 +15,15 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    /**
-     * Busca un usuario por su correo electrónico.
-     * Vital para el proceso de Login y para verificar registros duplicados.
-     * @param email Correo a consultar.
-     * @return Un Optional que contiene al usuario si existe.
+	/**
+     * Busca un usuario en la base de datos utilizando su correo electrónico.
+     * Usamos Optional para manejar de forma segura los casos donde el usuario no existe.
+     * * @param email El correo a buscar.
+     * @return Un Optional que contiene al Usuario si se encuentra.
      */
     Optional<Usuario> findByEmail(String email);
+    List<Usuario> findByRol(Rol rol);
 
-    /**
-     * Permite buscar usuarios por su rol (ADMIN o CLIENTE).
-     * Útil para segmentar envíos de promociones.
-     * @param rol Rol del usuario.
-     * @return Lista de usuarios que coinciden con el rol.
-     */
-    java.util.List<Usuario> findByRol(cl.felorf.lachefa.portafoliobootcam.models.Rol rol);
+   
+    boolean existsByEmail(String email);
 }

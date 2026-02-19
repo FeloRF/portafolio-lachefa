@@ -6,20 +6,20 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
- * Entidad que representa a los actores del sistema (Administradores y Clientes).
- * Almacena información de perfil y vincula el historial de compras.
+ * Entidad que representa a los actores del sistema.
+ * Soporta tres estados: Administrador, Cliente Registrado y Cliente Invitado.
  * * @author Felipe Rojas Flores
- * @version 1.0
+ * @version 2.0
  */
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
-	
-	@Id
+    
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	
-	@NotBlank(message = "El nombre es obligatorio")
+    
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombreCompleto;
 
     @NotBlank(message = "El email es obligatorio")
@@ -27,26 +27,39 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    /** * La contraseña ya no es @NotBlank para permitir clientes invitados.
+     * Se validará manualmente solo cuando el usuario decida registrarse.
+     */
     private String password;
 
-    /** Definición del rol para seguridad y lógica de negocio */
+    /**Campo para despacho, esencial para clientes invitados y registrados */
+    private String direccion;
+
+    /** Definición del rol: ADMIN o CLIENTE */
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    /** * Relación Uno a Muchos: Un usuario puede tener múltiples registros de compra.
-     * mappedBy indica que el dueño de la relación es el campo 'cliente' en la clase Venta.
-     */
+    /** Relación con el historial de compras */
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Venta> compras;
 
-    // Constructor vacío (JPA)
+    
+    // CONSTRUCTORES    
+
     public Usuario() {}
 
-    // Constructor para registro rápido
+    /** Constructor para Clientes Invitados (Sin contraseña) */
+    public Usuario(String nombreCompleto, String email, String direccion) {
+        this.nombreCompleto = nombreCompleto;
+        this.email = email.toLowerCase();
+        this.direccion = direccion;
+        this.rol = Rol.CLIENTE;
+    }
+
+    /** Constructor para Registro de Admin o Cliente con cuenta */
     public Usuario(String nombreCompleto, String email, String password, Rol rol) {
         this.nombreCompleto = nombreCompleto;
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
         this.rol = rol;
     }
@@ -66,11 +79,12 @@ public class Usuario {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
+    public String getDireccion() { return direccion; }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
 
     public List<Venta> getCompras() { return compras; }
     public void setCompras(List<Venta> compras) { this.compras = compras; }
 }
-
-

@@ -2,53 +2,101 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${titulo}">La Chefa - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
-    <h1 th:text="${titulo}">Nuevo Producto</h1>
+<body class="bg-light">
 
-   <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
-    
-    <div>
-        <label>Nombre de la Salsa:</label><br>
-        <input type="text" th:field="*{nombre}" required>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-4">
+                    <a th:href="@{/productos/catalogo}" class="btn btn-outline-secondary btn-sm me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h1 class="h3 mb-0" th:text="${titulo}">Registrar Producto</h1>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form th:action="@{/productos/guardar}" th:object="${producto}" method="post" class="needs-validation">
+                            
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Nombre de la Salsa o Encurtido</label>
+                                    <input type="text" th:field="*{nombre}" class="form-control" 
+                                           placeholder="Ej: Habanero del Infierno" required>
+                                    <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label fw-bold">Descripción del Sabor</label>
+                                    <textarea th:field="*{descripcion}" class="form-control" rows="3" 
+                                              placeholder="Describe los matices, ingredientes clave y maridaje sugerido..."></textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Nivel de Picor</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white"><i class="bi bi-fire text-danger"></i></span>
+                                        <select th:field="*{nivelPicor}" class="form-select">
+                                            <option value="0">0 - Suave / Sin picor</option>
+                                            <option value="1">1 - Apenas pica</option>
+                                            <option value="2">2 - Picante medio</option>
+                                            <option value="3">3 - Picante fuerte</option>
+                                            <option value="4">4 - Muy picante</option>
+                                            <option value="5">5 - ¡Extra Picante! 🔥</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Categoría</label>
+                                    <select th:field="*{categoria}" class="form-select">
+                                        <option value="Salsa Roja">Salsa Roja</option>
+                                        <option value="Salsa Verde">Salsa Verde</option>
+                                        <option value="Encurtido">Encurtido</option>
+                                        <option value="Aceite Picante">Aceite Picante</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Stock Inicial (Unidades)</label>
+                                    <input type="number" th:field="*{stock}" class="form-control" min="0" required>
+                                    <div class="text-danger small" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Precio (CLP)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" th:field="*{precio}" class="form-control" min="0" required>
+                                    </div>
+                                    <div class="text-danger small" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a th:href="@{/productos/catalogo}" class="btn btn-light px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-dark px-5">
+                                    <i class="bi bi-save me-2"></i> Guardar Producto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <p class="text-center text-muted mt-4 small">
+                    &copy; 2026 La Chefa - Sistema de Gestión de Inventario 
+                </p>
+            </div>
+        </div>
     </div>
 
-    <div style="margin-top: 15px;">
-        <label>Descripción del Sabor:</label><br>
-        <textarea th:field="*{descripcion}" rows="3" style="width: 300px;" 
-                  placeholder="Ej: Toques ahumados con base de tomate..."></textarea>
-    </div>
-
-    <div style="margin-top: 15px;">
-        <label>Nivel de Picante:</label><br>
-        <select th:field="*{nivelPicor}" style="padding: 5px; width: 200px;">
-            <option value="0">0 - No pica (Suave)</option>
-            <option value="1">1 - Apenas pica</option>
-            <option value="2">2 - Picante medio</option>
-            <option value="3">3 - Picante fuerte</option>
-            <option value="4">4 - Muy picante</option>
-            <option value="5">5 - ¡Extra Picante! 🔥</option>
-        </select>
-    </div>
-
-    <div style="margin-top: 15px;">
-        <label>Stock Inicial:</label>
-        <input type="number" th:field="*{stock}" required>
-    </div>
-    
-    <div style="margin-top: 15px;">
-        <label>Precio:</label>
-        <input type="number" th:field="*{precio}" required>
-    </div>
-
-    <button type="submit" style="margin-top: 20px; padding: 10px;">¡Cargar al Inventario!</button>
-</form>
-    
-    <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
-    <input type="hidden" th:field="*{id}" />
-
-    <br>
-    <a th:href="@{/productos/catalogo}">Volver al Catálogo</a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

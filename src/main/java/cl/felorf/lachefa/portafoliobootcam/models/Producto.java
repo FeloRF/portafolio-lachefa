@@ -1,17 +1,14 @@
 package cl.felorf.lachefa.portafoliobootcam.models;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-
 /**
- * Entidad que reprecenta a los productos en el inventario.
- * clase mapeada a la tabla 'productos' de a BD
- * * @author Felipe Rojas Flores
- * @version 1.0
- * */
-
+ * Entidad que representa a los productos en el inventario.
+ * Se han corregido los errores de sintaxis en los getters y consolidado los campos.
+ * @author Felipe Rojas Flores
+ * @version 2.0
+ */
 @Entity
 @Table(name = "productos")
 public class Producto {
@@ -27,11 +24,15 @@ public class Producto {
 	private String descripcion;
 	
 	@Min(0)
-	private Integer stock;
+	private Integer stock = 0;
 	
-	private Integer precio;
+	@Min(0)
+	private Integer precio = 0;
+	
+	// Campo vital para el catálogo y ranking
+	private String categoria;
 
-	/** Estado de visibilidad en el catálogo */
+    /** Estado de visibilidad en el catálogo */
     @Column(nullable = false)
     private boolean activo = true;
     
@@ -41,26 +42,32 @@ public class Producto {
     @Column(nullable = false)
     private Integer nivelPicor = 0; 
 
-	// Constructor por defecto
+	// Constructor por defecto obligatorio para JPA
 	public Producto() {}
 	
 	// Constructor Pro
-	public Producto(String nombre, Integer stock, Integer precio, String descripcion, Integer nivelPicor) {
+	public Producto(String nombre, Integer stock, Integer precio, String descripcion, Integer nivelPicor, String categoria) {
 		this.nombre = nombre;
 		this.stock = stock;
 		this.precio = precio;
 		this.descripcion = descripcion;
 		this.nivelPicor = nivelPicor;
+		this.categoria = categoria;
 		this.activo = true;
 	}
 
-	// GETTERS Y SETTERS
+	// ============================================
+	// GETTERS Y SETTERS (Ordenados y Limpios)
+	// ============================================
 
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+	public void setId(Long id) { this.id = id; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }

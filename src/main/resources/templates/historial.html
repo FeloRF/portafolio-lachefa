@@ -2,72 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${titulo}">Historial de Ventas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Historial de Ventas - La Chefa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body style="font-family: sans-serif; margin: 20px;">
+<body class="bg-light">
 
-    <header>
-        <h1 th:text="${titulo}">Historial de Ventas</h1>
-        <nav style="margin-bottom: 20px;">
-            <a th:href="@{/productos/catalogo}" style="font-weight: bold; color: #333;">← Volver al Catálogo</a>
-        </nav>
-    </header>
+    <div class="container py-4">
+        <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <div>
+                <h1 class="h2 mb-0" th:text="${titulo}">Libro de Ventas</h1>
+                <p class="text-muted small mb-0">Auditoría y Seguimiento de Ingresos</p>
+            </div>
+            <a th:href="@{/productos/catalogo}" class="btn btn-outline-dark btn-sm">
+                <i class="bi bi-arrow-left"></i> Volver al Inventario
+            </a>
+        </header>
 
-    <section style="background: #f4f4f4; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <span style="font-weight: bold; margin-right: 10px;">Filtrar periodo:</span>
-        <a th:href="@{/ventas/historial(periodo='hoy')}" 
-           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px;">Hoy</a>
-        
-        <a th:href="@{/ventas/historial(periodo='semana')}" 
-           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px; margin-left: 5px;">Esta Semana</a>
-        
-        <a th:href="@{/ventas/historial(periodo='mes')}" 
-           style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; text-decoration: none; color: #333; border-radius: 4px; margin-left: 5px;">Este Mes</a>
-        
-        <a th:href="@{/ventas/historial}" 
-           style="padding: 5px 10px; background: #333; color: #fff; border: 1px solid #333; text-decoration: none; border-radius: 4px; margin-left: 5px;">Ver Todo</a>
-    </section>
+        <section class="card shadow-sm border-0 mb-4">
+            <div class="card-body d-flex align-items-center flex-wrap gap-2">
+                <span class="fw-bold me-2"><i class="bi bi-funnel"></i> Filtrar:</span>
+                <a th:href="@{/ventas/historial(periodo='hoy')}" class="btn btn-sm btn-outline-secondary">Hoy</a>
+                <a th:href="@{/ventas/historial(periodo='semana')}" class="btn btn-sm btn-outline-secondary">Esta Semana</a>
+                <a th:href="@{/ventas/historial(periodo='mes')}" class="btn btn-sm btn-outline-secondary">Este Mes</a>
+                <a th:href="@{/ventas/historial}" class="btn btn-sm btn-dark">Ver Todo</a>
+            </div>
+        </section>
 
-    <div style="margin-bottom: 20px; padding: 15px; border: 2px solid #eef9f0; background: #f0fdf4; display: inline-block; border-radius: 8px;">
-        <h3 style="margin: 0; color: #166534;">💰 Total Ingresos en este Periodo:</h3>
-        <p style="font-size: 1.8em; font-weight: bold; margin: 10px 0; color: #15803d;" 
-           th:text="${'$ ' + granTotal}"></p>
+        <div class="row mb-4">
+            <div class="col-md-5">
+                <div class="card bg-success text-white shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h6 class="text-uppercase small opacity-75 mb-1">💰 Total Ingresos del Periodo</h6>
+                        <h2 class="fw-bold mb-0" th:text="${'$ ' + #numbers.formatDecimal(granTotal, 0, 'POINT', 0, 'COMMA')}"></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-3">ID / Fecha</th>
+                            <th>Cliente</th>
+                            <th>Productos / Detalle</th>
+                            <th class="text-end pe-3">Total Venta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="v : ${ventas}">
+                            <td class="ps-3">
+                                <span class="badge bg-secondary mb-1" th:text="'#' + ${v.id}"></span>
+                                <div class="small text-muted" th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></div>
+                            </td>
+                            <td>
+                                <div th:if="${v.cliente != null}">
+                                    <span class="fw-bold text-primary" th:text="${v.cliente.nombreCompleto}"></span>
+                                    <div class="small text-muted" th:text="${v.cliente.email}"></div>
+                                </div>
+                                <span th:if="${v.cliente == null}" class="text-muted fst-italic">Venta Rápida (Sin Registro)</span>
+                            </td>
+                            <td>
+                                <div th:each="detalle : ${v.detalles}" class="small border-bottom py-1 mb-1 last-child-no-border">
+                                    <span class="fw-bold" th:text="${detalle.cantidad + 'x '}"></span>
+                                    <span th:text="${detalle.producto.nombre}"></span>
+                                    <span class="text-muted ms-1" th:text="'($' + #numbers.formatDecimal(detalle.precioUnitario, 0, 'POINT', 0, 'COMMA') + ')'"></span>
+                                </div>
+                            </td>
+                            <td class="text-end pe-3">
+                                <span class="h6 fw-bold text-dark" th:text="${'$ ' + #numbers.formatDecimal(v.total, 0, 'POINT', 0, 'COMMA')}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(ventas)}" class="p-5 text-center bg-white">
+                <i class="bi bi-cash-stack display-4 text-muted opacity-25"></i>
+                <p class="mt-3 text-muted">No se registraron movimientos en el periodo seleccionado.</p>
+            </div>
+        </div>
     </div>
 
-    <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
-        <thead>
-            <tr style="background-color: #333; color: #fff;">
-                <th style="padding: 10px;">Fecha y Hora</th>
-                <th style="padding: 10px;">Producto</th>
-                <th style="padding: 10px;">Cliente</th>
-                <th style="padding: 10px;">Cantidad</th>
-                <th style="padding: 10px;">Precio Unit.</th>
-                <th style="padding: 10px;">Total Venta</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="v : ${ventas}">
-                <td style="padding: 10px;" th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></td>
-                
-                <td style="padding: 10px;">
-                    <strong th:text="${v.producto.nombre}"></strong>
-                </td>
-                
-                <td style="padding: 10px;">
-                    <span th:text="${v.cliente != null ? v.cliente.nombreCompleto : 'Venta Rápida'}" 
-                          th:style="${v.cliente == null ? 'color: #999; font-style: italic;' : 'color: #1d4ed8; font-weight: bold;'}"></span>
-                </td>
-                
-                <td style="padding: 10px;" th:text="${v.cantidad}"></td>
-                <td style="padding: 10px;" th:text="${'$ ' + v.precioVenta}"></td>
-                <td style="padding: 10px; font-weight: bold;" th:text="${'$ ' + v.totalVenta}"></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div th:if="${#lists.isEmpty(ventas)}" style="margin-top: 30px; text-align: center; color: #666;">
-        <p>No se registraron movimientos en el periodo seleccionado.</p>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

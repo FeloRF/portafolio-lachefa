@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,6 +51,17 @@
                         
                         <form th:action="@{/checkout/pagar}" method="post" class="needs-validation">
                             <div class="row g-3">
+                            
+                            	<div sec:authorize="isAnonymous()" class="alert alert-dark border-0 shadow-sm mb-4">
+									    <div class="d-flex align-items-center">
+									        <div class="flex-grow-1">
+									            <h6 class="fw-bold mb-1">¿Quieres guardar tus datos para la próxima?</h6>
+									            <p class="small mb-0 text-muted">Crea una cuenta antes de pagar y accede al recetario.</p>
+									        </div>
+									        <a th:href="@{/registro}" class="btn btn-sm btn-outline-warning">Registrarme ahora</a>
+									    </div>
+									</div>
+                            	
                                 <div class="col-12">
                                     <label for="nombre" class="form-label">Nombre Completo</label>
                                     <input type="text" class="form-control" id="nombre" name="nombre" 

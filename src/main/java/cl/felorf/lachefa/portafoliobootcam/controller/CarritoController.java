@@ -18,50 +18,28 @@ public class CarritoController {
     private final CarritoService carritoService;
     private final ProductoService productoService;
 
-    // Inyección por Constructor: Estándar de inmutabilidad y testeo
     public CarritoController(CarritoService carritoService, ProductoService productoService) {
         this.carritoService = carritoService;
         this.productoService = productoService;
     }
 
-    /**
-     * Agrega un producto al carrito desde el catálogo.
-     */
     @GetMapping("/agregar/{id}")
-    public String agregarAlCarrito(@PathVariable Long id, 
-                                   HttpSession session, 
-                                   RedirectAttributes flash) {
-        
+    public String agregarAlCarrito(@PathVariable Long id, HttpSession session, RedirectAttributes flash) {
         Optional<Producto> productoOpt = productoService.buscarPorId(id);
 
         if (productoOpt.isPresent()) {
             Producto producto = productoOpt.get();
-            
-            // Verificamos stock antes de agregar (Red Team Mindset)
             if (producto.getStock() > 0) {
                 carritoService.agregarProducto(producto, 1);
-                
-                // Actualizamos el contador de la sesión para el badge del Navbar
-                int totalItems = carritoService.getItems().stream()
-                                               .mapToInt(item -> item.getCantidad())
-                                               .sum();
-                session.setAttribute("itemsEnCarrito", totalItems);
-                
-                flash.addFlashAttribute("success", "¡" + producto.getNombre() + " agregada al carrito!");
+                actualizarContadorSesion(session); // Método centralizado
+                flash.addFlashAttribute("success", "¡" + producto.getNombre() + " agregada!");
             } else {
-                flash.addFlashAttribute("error", "Lo sentimos, nos quedamos sin stock de " + producto.getNombre());
+                flash.addFlashAttribute("error", "Sin stock de " + producto.getNombre());
             }
-        } else {
-            flash.addFlashAttribute("error", "El producto solicitado no existe.");
         }
-
-        // Redirigimos de vuelta al catálogo para que el usuario siga comprando
         return "redirect:/catalogoLaChefa"; 
     }
 
-    /**
-     * Muestra la vista detallada del carrito.
-     */
     @GetMapping("/ver")
     public String verCarrito(Model model) {
         model.addAttribute("items", carritoService.getItems());
@@ -69,20 +47,46 @@ public class CarritoController {
         model.addAttribute("titulo", "Tu Carrito de La Chefa");
         return "tienda/carrito"; 
     }
+    
+    @GetMapping("/incrementar/{id}")
+    public String incrementar(@PathVariable Long id, HttpSession session) {
+        carritoService.actualizarCantidad(id, 1);
+        actualizarContadorSesion(session);
+        return "redirect:/carrito/ver";
+    }
 
-    /**
-     * Elimina un item del carrito.
-     */
+    @GetMapping("/decrementar/{id}")
+    public String decrementar(@PathVariable Long id, HttpSession session) {
+        carritoService.actualizarCantidad(id, -1);
+        actualizarContadorSesion(session);
+        return "redirect:/carrito/ver";
+    }
+
     @GetMapping("/eliminar/{id}")
     public String eliminarDelCarrito(@PathVariable Long id, HttpSession session) {
         carritoService.eliminarItem(id);
-        
-        // Actualizamos el contador del Navbar tras eliminar
-        int totalItems = carritoService.getItems().stream()
-                                       .mapToInt(item -> item.getCantidad())
-                                       .sum();
-        session.setAttribute("itemsEnCarrito", totalItems);
-        
+        actualizarContadorSesion(session); // Sincronizamos el badge
         return "redirect:/carrito/ver";
+    }
+
+    /**
+     * Limpia todo el carrito de una vez
+     * Requerido por el botón 'Vaciar Carrito' en carrito.html
+     */
+    @GetMapping("/limpiar")
+    public String limpiarCarrito(HttpSession session) {
+        carritoService.limpiarCarrito();
+        session.setAttribute("itemsEnCarrito", 0); // Reset a cero
+        return "redirect:/catalogoLaChefa";
+    }
+
+    /**
+     * Helper Method: Centraliza la lógica del contador para evitar errores de tipeo
+     */
+    private void actualizarContadorSesion(HttpSession session) {
+        int totalItems = carritoService.getItems().stream()
+                                     .mapToInt(item -> item.getCantidad())
+                                     .sum();
+        session.setAttribute("itemsEnCarrito", totalItems); // Nombre clave para fragments.html
     }
 }

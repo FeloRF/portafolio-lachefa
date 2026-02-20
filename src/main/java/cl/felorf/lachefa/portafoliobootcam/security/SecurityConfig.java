@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -17,39 +19,63 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // RUTAS PÚBLICAS: Todo el mundo puede ver la tienda y el inicio
-                .requestMatchers("/", "/catalogoLaChefa", "/carrito/**", "/recetario", "/login", "/css/**", "/js/**", "/img/**").permitAll() 
+                // 1. RUTAS PÚBLICAS
+                .requestMatchers("/", "/catalogoLaChefa", "/recetario", "/login", "/registro", 
+                                "/carrito/**", "/checkout/**", "/exito/**", 
+                                "/css/**", "/js/**", "/img/**").permitAll() 
                 
-                // RUTAS PROTEGIDAS: Solo el Admin entra a inventario y ventas
+                // 2. EL MURO DEL RECETARIO (Detalles protegidos)
+                .requestMatchers("/recetario/detalle/**").hasAnyRole("USER", "ADMIN")
+                
+                // 3. ZONA PRIVADA DEL CLIENTE
+                .requestMatchers("/perfil/**", "/favoritos/**").hasAnyRole("USER", "ADMIN")
+                
+                // 4. RUTAS DE ADMINISTRACIÓN
                 .requestMatchers("/productos/**", "/ventas/**").hasRole("ADMIN")
                 
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login") // Nuestra página personalizada
-                .defaultSuccessUrl("/productos/catalogo", true) // A donde va el admin al loguearse
+                .loginPage("/login") 
+                .defaultSuccessUrl("/", false) // false permite que si venía de una receta, vuelva a ella
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/") // Al salir, vuelve al home
+                .logoutSuccessUrl("/") 
                 .permitAll()
             )
-            .csrf(csrf -> csrf.disable()); // Deshabilitado para facilitar pruebas de formularios
+            .csrf(csrf -> csrf.disable()); 
             
         return http.build();
     }
 
     /**
-     * USUARIO DE PRUEBA: 
-     * Creamos un admin en memoria para que puedas probar el flujo de inmediato.
+     * USUARIOS EN MEMORIA: 
+     * Ahora usamos explícitamente el passwordEncoder para las contraseñas hardcoded.
      */
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails admin = User.withDefaultPasswordEncoder()
+        PasswordEncoder encoder = passwordEncoder();
+
+        // Admin encriptado
+        UserDetails admin = User.builder()
             .username("admin")
-            .password("chefa2026")
+            .password(encoder.encode("chefa2026")) // Usamos el encoder aquí
             .roles("ADMIN")
             .build();
-        return new InMemoryUserDetailsManager(admin);
+
+        // Cliente encriptado
+        UserDetails cliente = User.builder()
+            .username("felo")
+            .password(encoder.encode("salsa2026")) // Usamos el encoder aquí
+            .roles("USER")
+            .build();
+
+        return new InMemoryUserDetailsManager(admin, cliente);
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Motor de encriptación oficial
     }
 }

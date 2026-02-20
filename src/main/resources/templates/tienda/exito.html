@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+ 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,7 +68,7 @@
                 </div>
 
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-5">
-                    <a th:href="@{/productos/catalogo}" class="btn btn-dark btn-lg px-5 fw-bold shadow-sm">
+                    <a th:href="@{/catalogoLaChefa}" class="btn btn-dark btn-lg px-5 fw-bold shadow-sm">
                         <i class="bi bi-shop me-2"></i> Volver a la Tienda
                     </a>
                     <button onclick="window.print();" class="btn btn-outline-secondary btn-lg px-4">

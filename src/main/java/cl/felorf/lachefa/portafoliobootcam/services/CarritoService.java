@@ -52,6 +52,18 @@ public class CarritoService {
                 .mapToInt(CarritoItem::getSubtotal)
                 .sum();
     }
+    
+    public void actualizarCantidad(Long productoId, int cambio) {
+        for (CarritoItem item : items) {
+            if (item.getProducto().getId().equals(productoId)) {
+                int nuevaCantidad = item.getCantidad() + cambio;
+                if (nuevaCantidad > 0) {
+                    item.setCantidad(nuevaCantidad);
+                }
+                break;
+            }
+        }
+    }
 
     /**
      * Limpia el carrito después de una compra exitosa o por cancelación.
@@ -60,7 +72,7 @@ public class CarritoService {
         items.clear();
     }
 
-    public List<CarritoItem> getItems() {
+    public List<CarritoItem> getItems() { 
         return items;
     }
 }

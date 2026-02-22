@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="~{fragments :: head_comun}"></th:block>
     <title th:text="${titulo}">Recetario - La Chefa</title>
+    <style>
+        .recipe-card { transition: transform 0.3s ease, shadow 0.3s ease; border: none; }
+        .recipe-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.15)!important; }
+        .img-container { position: relative; height: 220px; overflow: hidden; }
+        .recipe-img { width: 100%; height: 100%; object-fit: cover; }
+        .overlay-badge { position: absolute; top: 15px; right: 15px; z-index: 10; }
+    </style>
 </head>
 <body class="bg-light">
 
@@ -11,36 +18,65 @@
 
     <div class="container py-5">
         <header class="text-center mb-5">
-            <h1 class="display-5 fw-bold text-dark">Libro de Sabores</h1>
-            <p class="text-muted">Aprende a combinar nuestras salsas con tus platos favoritos</p>
+            <h1 class="display-4 fw-bold text-dark">Libro de Sabores 🌶️</h1>
+            <p class="lead text-muted">Recetas exclusivas para potenciar tus platos con el toque de La Chefa</p>
         </header>
 
         <div class="row g-4">
-            <div th:each="r : ${recetas}" class="col-md-4">
-                <div class="card h-100 shadow-sm border-0 overflow-hidden">
-                    <div class="bg-secondary text-white p-5 text-center">
-                        <i class="bi bi-egg-fried display-1 opacity-25"></i>
-                    </div>
-                    <div class="card-body">
-                        <span class="badge bg-danger mb-2" th:text="'Salsa: ' + ${r.salsa}"></span>
-                        <h5 class="card-title fw-bold" th:text="${r.nombre}"></h5>
-                        <div class="d-flex justify-content-between small text-muted mt-3">
-                            <span><i class="bi bi-bar-chart"></i> <span th:text="${r.dificultad}"></span></span>
-                            <span><i class="bi bi-clock"></i> <span th:text="${r.tiempo}"></span></span>
+            <div th:each="r : ${recetas}" class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm recipe-card rounded-4 overflow-hidden">
+                    
+                    <div class="img-container bg-dark">
+                        <img th:if="${r.imagenUrl != null}" th:src="${r.imagenUrl}" 
+                             class="recipe-img" th:alt="${r.nombre}">
+                        
+                        <div th:unless="${r.imagenUrl != null}" 
+                             class="d-flex align-items-center justify-content-center h-100 opacity-50">
+                            <i class="bi bi-egg-fried text-white display-1"></i>
+                        </div>
+
+                        <div class="overlay-badge">
+                            <span class="badge bg-danger px-3 py-2 shadow-sm fw-bold" 
+                                  th:text="${r.salsa != null ? 'Con ' + r.salsa : 'Salsa La Chefa'}">
+                            </span>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 pb-3">
-					    <a th:href="@{/recetario/detalle/{id}(id=${r.id})}" 
-					       class="btn btn-outline-dark btn-sm w-100">
-					       <i class="bi bi-journal-text me-2"></i> Ver Receta
-					    </a>
-					</div>
+
+                    <div class="card-body p-4">
+                        <h4 class="card-title fw-bold text-dark mb-3" th:text="${r.nombre}"></h4>
+                        
+                        <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded-3 mb-3">
+                            <div class="small">
+                                <i class="bi bi-bar-chart-steps text-danger me-1"></i>
+                                <span class="fw-semibold text-muted" th:text="${r.dificultad}">Fácil</span>
+                            </div>
+                            <div class="small">
+                                <i class="bi bi-clock-history text-danger me-1"></i>
+                                <span class="fw-semibold text-muted" th:text="${r.tiempo}">20 min</span>
+                            </div>
+                        </div>
+                        
+                        <p class="card-text text-muted small" 
+                           th:text="${#strings.abbreviate(r.ingredientes, 100)}"></p>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                        <a th:href="@{/recetario/detalle/{id}(id=${r.id})}" 
+                           class="btn btn-dark w-100 py-2 rounded-3 fw-bold">
+                           <i class="bi bi-journal-richtext me-2"></i> Ver Paso a Paso
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div th:if="${#lists.isEmpty(recetas)}" class="text-center py-5">
-            <p class="text-muted">Pronto subiremos nuestras recetas secretas...</p>
+            <div class="mb-4">
+                <i class="bi bi-book-half display-1 text-muted opacity-25"></i>
+            </div>
+            <h3 class="text-dark fw-bold">Nuestra cocina está encendida...</h3>
+            <p class="text-muted">Pronto compartiremos los secretos culinarios de La Chefa.</p>
+            <a th:href="@{/}" class="btn btn-outline-danger mt-3 px-4">Volver al Home</a>
         </div>
     </div>
 

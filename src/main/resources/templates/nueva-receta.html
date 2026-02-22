@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="~{fragments :: head_comun}"></th:block>
+    <title>Nueva Receta - Panel Admin</title>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments :: nav_publico}"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <th:block th:replace="~{fragments :: head_comun}"></th:block>
+    <title>Nueva Receta - Panel Admin</title>
+</head>
+<body class="bg-light">
+    <div th:replace="~{fragments :: nav_publico}"></div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h4 class="mb-0 text-center">📝 Publicar Nueva Receta</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <form th:action="@{/productos/recetas/guardar}" method="post" enctype="multipart/form-data">
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Nombre de la Receta</label>
+                                <input type="text" name="nombre" class="form-control form-control-lg" 
+                                       placeholder="Ej: Ají de Gallina 'La Chefa'" required>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-5">
+                                    <label class="form-label fw-bold">Salsa Recomendada</label>
+                                    <input type="text" name="salsa" class="form-control" 
+                                           placeholder="Ej: Salsa Habanero Mango">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Dificultad</label>
+                                    <select name="dificultad" class="form-select">
+                                        <option value="Fácil">🟢 Fácil</option>
+                                        <option value="Media" selected>🟡 Media</option>
+                                        <option value="Experto">🔴 Experto</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">Tiempo</label>
+                                    <input type="text" name="tiempo" class="form-control" 
+                                           placeholder="Ej: 30 min">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Ingredientes</label>
+                                    <textarea name="ingredientes" class="form-control" rows="4" 
+                                              placeholder="Escribe cada ingrediente en una línea nueva..."></textarea>
+                                    <div class="form-text">Detalla las cantidades para un resultado perfecto.</div>
+                                </div>
+
+                                <div class="col-md-12 mb-4">
+                                    <label class="form-label fw-bold">Instrucciones de Preparación</label>
+                                    <textarea name="instrucciones" class="form-control" rows="8" 
+                                              placeholder="Paso 1: Limpiar los ajíes..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center bg-light p-3 rounded-3 mx-0">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <label class="form-label fw-bold">Imagen de la Receta</label>
+                                    <input type="file" name="archivoImagen" class="form-control" accept="image/*">
+                                    <div class="form-text">Formatos recomendados: JPG o PNG.</div>
+                                </div>
+
+                                <div class="col-md-4 text-md-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input" type="checkbox" name="publicado" id="publicado" checked>
+                                        <label class="form-check-label fw-bold" for="publicado">Publicar</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/productos/catalogo}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-danger px-5 fw-bold shadow-sm">
+                                    Guardar Receta 🌶️
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+                    <div class="card-header bg-dark text-white py-3">
+                        <h4 class="mb-0 text-center">📝 Publicar Nueva Receta</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <form th:action="@{/productos/recetas/guardar}" method="post" enctype="multipart/form-data">
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nombre de la Receta</label>
+                                <input type="text" name="nombre" class="form-control" 
+                                       placeholder="Ej: Ají de Gallina 'La Chefa'" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Ingredientes</label>
+                                    <textarea name="ingredientes" class="form-control" rows="4" 
+                                              placeholder="Escribe cada ingrediente en una línea nueva..."></textarea>
+                                    <div class="form-text">Menciona cantidades.</div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Instrucciones de Preparación</label>
+                                    <textarea name="instrucciones" class="form-control" rows="8" 
+                                              placeholder="Paso 1: Limpiar los ajíes..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center">
+                                <div class="col-md-8 mb-3">
+                                    <label class="form-label fw-bold">Sube una Foto de tu Receta.</label>
+                                    <input type="file" name="archivoImagen" class="form-control" accept="image/*">
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check form-switch mt-4">
+                                        <input class="form-check-input" type="checkbox" name="publicado" id="publicado" checked>
+                                        <label class="form-check-label" for="publicado">Publicar</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between">
+                                <a th:href="@{/productos/catalogo}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                                <button type="submit" class="btn btn-danger px-5 fw-bold shadow-sm">
+                                    Guardar Receta 🌶️
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

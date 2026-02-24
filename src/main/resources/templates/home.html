@@ -1,95 +1,72 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 <head>
-    <div th:replace="~{fragments :: head_comun}"></div>
-    <link rel="stylesheet" th:href="@{/css/background.css}">
-    <title>La Chefa - Home</title>
+    <th:block th:replace="~{fragments :: head_comun}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body class="home-page">
-    
-    <nav class="custom-nav">
-    <button class="menu-toggle" type="button" 
-            data-bs-toggle="offcanvas" 
-            data-bs-target="#menuPrincipal" 
-            aria-controls="menuPrincipal">
-        <i class="bi bi-list"></i> </button>
 
-    <h1 class="brand-name">LA CHEFA</h1>
+    <div id="bgCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="bg-img" th:style="'background-image: url(' + @{/img/bgFruti.png} + ');'"></div>
+            </div>
+            <div class="carousel-item">
+                <div class="bg-img" th:style="'background-image: url(' + @{/img/bgJalea.png} + ');'"></div>
+            </div>
+            <div class="carousel-item">
+                <div class="bg-img" th:style="'background-image: url(' + @{/img/bgPiña.png} + ');'"></div>
+            </div>
+        </div>
+    </div>
 
-    <a th:href="@{/login}" class="btn-login-red">LOGIN</a>
-</nav>
+    <header class="glass-header">
+        <nav class="container-fluid d-flex justify-content-between align-items-center px-lg-5">
+            <div class="brand-logo">LA<br> CHEFA</div>
+            
+            <ul class="nav-links d-none d-md-flex">
+                <li><a th:href="@{/catalogoLaChefa}">NUESTRO CATÁLOGO</a></li>
+                <li><a th:href="@{/recetario}">RECETARIO</a></li>
+                <li sec:authorize="isAnonymous()"><a th:href="@{/registro}">CREA TU CUENTA</a></li>
+                <li sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{/productos/catalogo}" class="text-warning">PANEL ADMIN</a>
+                </li>
+            </ul>
+
+            <div class="login-zone">
+                <a sec:authorize="isAnonymous()" th:href="@{/login}" class="login-link">
+                    <i class="bi bi-person-circle"></i>
+                    <span>LOGIN</span>
+                </a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}" class="login-link">
+                    <i class="bi bi-person-check-fill"></i>
+                    <span>PERFIL</span>
+                </a>
+            </div>
+        </nav>
+    </header>
 
     <main class="hero-container">
-    <div class="hero-half-circle"></div>
-
-    <section class="hero-text-content">
-        <h1 class="main-display-title">LA <br> CHEFA</h1>
-        <p class="main-description">
-            Salsas artesanales creadas con ingredientes locales y ese toque de picor 
-            único que transforma cualquier comida en una experiencia inolvidable. 
-            Tradición y audacia en cada gota.
-        </p>
-    </section>
-    
-    <div class="sauce-carousel">
-        <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
-        
-        <div class="sauce-carousel">
-    <button class="carousel-control prev" onclick="moveSlide(-1)">&#10094;</button>
-    
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img th:src="@{'/img/salsas_con_ajies_bg_blanco (1).png'}" 
-                 alt="Salsa Roja" 
-                 class="sauce-img">
+        <div class="text-content">
+            <h1 class="main-title">
+                LA <br> <span>CHEFA</span>
+            </h1>
+            <p class="main-paragraph">
+                Salsas artesanales creadas con ingredientes locales y ese toque de picor único 
+                que transforma cualquier comida en una experiencia inolvidable. Tradición y 
+                audacia en cada gota.
+            </p>
+            <div class="mt-4">
+                <a th:href="@{/catalogoLaChefa}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
+                    EXPLORAR TIENDA
+                </a>
+            </div>
         </div>
-
-        <div class="carousel-item">
-            <img th:src="@{'/img/jalea2.png'}" 
-            	 alt="Salsa Verde" 
-            	 class="sauce-img">
-        </div>
-    </div>
-
-    <button class="carousel-control next" onclick="moveSlide(1)">&#10095;</button>
-</div>
-    
-    
-
-    <div class="action-header-group">
-        <a th:href="@{/catalogoLaChefa}" class="btn-action-small">TIENDA</a>
-        <a th:href="@{/registro}" class="btn-action-small" sec:authorize="isAnonymous()">CREA TU CUENTA</a>
-        <a th:href="@{/recetario}" class="btn-action-small" sec:authorize="isAuthenticated()">RECETARIO</a>
-        <a th:href="@{/productos/catalogo}" class="btn-action-small">ADMIN</a>
-    </div>
-
-    <footer class="dev-footer">
-        Felipe Rojas Flores | LA CHEFA Project 2026
-    </footer>
-</main>
     </main>
-    
-    <script>
-        let currentSlide = 0;
 
-        function moveSlide(step) {
-            const slides = document.querySelectorAll('.carousel-item');
-            if (slides.length === 0) return; // Seguridad por si no hay fotos
-
-            // Quitar clase activa
-            slides[currentSlide].classList.remove('active');
-            
-            // Calcular siguiente slide
-            currentSlide = (currentSlide + step + slides.length) % slides.length;
-            
-            // Añadir clase activa al nuevo
-            slides[currentSlide].classList.add('active');
-        }
-
-        // Cambio automático cada 5 segundos
-        setInterval(() => moveSlide(1), 5000);
-    </script>
+    <footer class="footer-minimal">FELIPE ROJAS FLORES | LA CHEFA PROJECT 2026</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

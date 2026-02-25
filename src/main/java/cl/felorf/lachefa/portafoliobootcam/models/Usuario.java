@@ -9,7 +9,7 @@ import java.util.List;
  * Entidad que representa a los actores del sistema.
  * Soporta tres estados: Administrador, Cliente Registrado y Cliente Invitado.
  * * @author Felipe Rojas Flores
- * @version 2.0
+ * @version 2.1
  */
 @Entity
 @Table(name = "usuarios")
@@ -26,13 +26,19 @@ public class Usuario {
     @Email(message = "Formato de email inválido")
     @Column(unique = true, nullable = false)
     private String email;
+    
+    /** * Nombre de usuario único (ej: 'admin'). 
+     * Permite login sin necesidad de usar el email para administradores.
+     */
+    @Column(unique = true)
+    private String username;
 
     /** * La contraseña ya no es @NotBlank para permitir clientes invitados.
-     * Se validará manualmente solo cuando el usuario decida registrarse.
+     * Se valida manualmente en el proceso de registro.
      */
     private String password;
 
-    /**Campo para despacho, esencial para clientes invitados y registrados */
+    /** Campo para despacho, esencial para la logística */
     private String direccion;
 
     /** Definición del rol: ADMIN o CLIENTE */
@@ -43,23 +49,30 @@ public class Usuario {
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Venta> compras;
 
-    
-    // CONSTRUCTORES    
+    // ==========================================================
+    // CONSTRUCTORES
+    // ==========================================================
 
     public Usuario() {}
 
-    /** Constructor para Clientes Invitados (Sin contraseña) */
+    /** * Constructor para Clientes Invitados.
+     * Se usa el email como username temporal por defecto.
+     */
     public Usuario(String nombreCompleto, String email, String direccion) {
         this.nombreCompleto = nombreCompleto;
-        this.email = email.toLowerCase();
+        this.email = email.toLowerCase().trim();
+        this.username = email.toLowerCase().trim();
         this.direccion = direccion;
         this.rol = Rol.CLIENTE;
     }
 
-    /** Constructor para Registro de Admin o Cliente con cuenta */
-    public Usuario(String nombreCompleto, String email, String password, Rol rol) {
+    /** * Constructor completo para Administradores o Clientes con cuenta.
+     * Incluye el alias (username) para el login híbrido.
+     */
+    public Usuario(String nombreCompleto, String email, String username, String password, Rol rol) {
         this.nombreCompleto = nombreCompleto;
-        this.email = email.toLowerCase();
+        this.email = email.toLowerCase().trim();
+        this.username = (username != null) ? username.trim() : email.toLowerCase().trim();
         this.password = password;
         this.rol = rol;
     }
@@ -75,6 +88,10 @@ public class Usuario {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    /** Getter y Setter para Username (Vital para login híbrido) */
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }

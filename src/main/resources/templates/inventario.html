@@ -27,10 +27,10 @@
             
             <div class="col-md-7 d-flex justify-content-md-end gap-2 flex-wrap">
                 <a th:href="@{/productos/nuevo}" class="btn btn-dark btn-admin-action shadow-sm">
-                    <i class="bi bi-plus-circle me-1"></i> Nueva Salsa
+    				<i class="bi bi-plus-circle me-1"></i> Nueva Salsa
                 </a>
                 
-                <a th:href="@{/productos/recetas/nueva}" class="btn btn-danger btn-admin-action shadow-sm">
+                <a th:href="@{/nueva-receta}" class="btn btn-danger btn-admin-action shadow-sm">
                     <i class="bi bi-journal-plus me-1"></i> Nueva Receta 🌶️
                 </a>
 
@@ -157,7 +157,7 @@
                                     <span th:if="${p.nivelPicor > 0}">
                                         <span th:each="i : ${#numbers.sequence(1, p.nivelPicor)}">🌶️</span>
                                     </span>
-                                    <span th:if="${p.nivelPicor == 0}" class="text-muted fst-italic small">Básico</span>
+                                    <span th:if="${p.nivelPicor == 0}" class="text-muted fst-italic small">NO PICA</span>
                                     <small class="text-muted ms-1" th:text="'(' + ${p.nivelPicor} + '/5)'"></small>
                                 </div>
                             </td>

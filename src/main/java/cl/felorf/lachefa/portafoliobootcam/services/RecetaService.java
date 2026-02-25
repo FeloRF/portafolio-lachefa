@@ -3,6 +3,7 @@ package cl.felorf.lachefa.portafoliobootcam.services;
 import cl.felorf.lachefa.portafoliobootcam.models.Receta;
 import cl.felorf.lachefa.portafoliobootcam.repositories.RecetaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Importante para seguridad de datos
 import java.util.List;
 import java.util.Optional;
 
@@ -15,13 +16,32 @@ public class RecetaService {
         this.recetaRepository = recetaRepository;
     }
 
-    // Requerido por la línea 31 de tu controlador
+    @Transactional(readOnly = true)
     public List<Receta> listarTodas() {
         return recetaRepository.findAll();
     }
 
-    // Requerido por la línea 42 de tu controlador
+    @Transactional(readOnly = true)
     public Optional<Receta> buscarPorId(Long id) {
         return recetaRepository.findById(id);
+    }
+
+    /**
+     * Guarda o actualiza una receta. 
+     * @Transactional asegura que si algo falla, no se guarde nada a medias.
+     */
+    @Transactional
+    public void guardar(Receta receta) {
+        recetaRepository.save(receta);
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        recetaRepository.deleteById(id);
+    }
+    
+    @Transactional(readOnly = true)
+    public boolean existePorId(Long id) {
+        return recetaRepository.existsById(id);
     }
 }

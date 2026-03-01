@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
@@ -8,11 +6,12 @@
     <title th:text="${titulo}">Nueva Receta - Panel Admin</title>
     <style>
         body { background-color: #0a0a0a !important; color: #f8f9fa !important; }
-        /* La tarjeta del formulario debe ser oscura para no desentonar */
         .card { background-color: #1a1a1a !important; color: white !important; border: 1px solid #333 !important; }
         .form-control, .form-select { background-color: #2b2b2b !important; border-color: #444 !important; color: white !important; }
-        .form-control:focus { background-color: #333 !important; color: white !important; border-color: #cc1d1d !important; }
-        label { color: #e0e0e0 !important; }
+        .form-control:focus { background-color: #333 !important; color: white !important; border-color: #cc1d1d !important; box-shadow: none; }
+        label { color: #ffc107 !important; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; }
+        .form-text { color: #a0a0a0 !important; }
+        .bg-custom-dark { background-color: #252525 !important; border: 1px solid #333 !important; }
     </style>
 </head>
 
@@ -30,32 +29,31 @@
                 </div>
 
                 <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
-                    <div class="card-header bg-dark text-white py-3">
+                    <div class="card-header bg-dark text-white py-3 border-bottom border-secondary">
                         <h4 class="mb-0 text-center" style="font-family: 'Playfair Display', serif;">
                             <span th:text="${receta.id != null ? '📝 Editar Receta' : '📝 Publicar Nueva Receta'}">Acción</span>
                         </h4>
                     </div>
                     
                     <div class="card-body p-4 p-md-5">
-                        <form th:action="@{/productos/recetas/guardar}" th:object="${receta}" method="post" enctype="multipart/form-data">
+                        <form th:action="@{/productos/recetas/guardar}" th:object="${receta}" method="post">
                             
                             <input type="hidden" th:field="*{id}">
-                            <input type="hidden" th:field="*{imagenUrl}">
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Nombre de la Receta</label>
+                                <label class="form-label">Nombre de la Receta</label>
                                 <input type="text" th:field="*{nombre}" class="form-control form-control-lg rounded-3" 
                                        placeholder="Ej: Ají de Gallina 'La Chefa'" required>
                             </div>
 
                             <div class="row mb-4">
                                 <div class="col-md-5 mb-3 mb-md-0">
-                                    <label class="form-label fw-bold">Salsa Recomendada</label>
+                                    <label class="form-label">Salsa Recomendada</label>
                                     <input type="text" th:field="*{salsa}" class="form-control rounded-3" 
                                            placeholder="Ej: Salsa Habanero Mango">
                                 </div>
                                 <div class="col-md-4 mb-3 mb-md-0">
-                                    <label class="form-label fw-bold">Dificultad</label>
+                                    <label class="form-label">Dificultad</label>
                                     <select th:field="*{dificultad}" class="form-select rounded-3">
                                         <option value="Fácil">🟢 Fácil</option>
                                         <option value="Media">🟡 Media</option>
@@ -63,36 +61,37 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label fw-bold">Tiempo</label>
+                                    <label class="form-label">Tiempo</label>
                                     <input type="text" th:field="*{tiempo}" class="form-control rounded-3" 
                                            placeholder="Ej: 30 min">
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Ingredientes</label>
+                                <label class="form-label">Ingredientes</label>
                                 <textarea th:field="*{ingredientes}" class="form-control rounded-3" rows="4" 
                                           placeholder="Escribe cada ingrediente en una línea nueva..."></textarea>
                                 <div class="form-text">Detalla las cantidades para un resultado perfecto.</div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Instrucciones de Preparación</label>
+                                <label class="form-label">Instrucciones de Preparación</label>
                                 <textarea th:field="*{instrucciones}" class="form-control rounded-3" rows="8" 
                                           placeholder="Paso 1: Limpiar los ajíes..."></textarea>
                             </div>
 
-                            <div class="row align-items-center bg-light p-3 rounded-4 mx-0 border">
-                                <div class="col-md-8 mb-3 mb-md-0">
-                                    <label class="form-label fw-bold">Imagen de la Receta</label>
-                                    <input type="file" name="archivoImagen" class="form-control rounded-3" accept="image/*">
-                                    <div class="form-text">Formatos recomendados: JPG o PNG. Máximo 2MB.</div>
+                            <div class="row align-items-center bg-custom-dark p-4 rounded-4 mx-0 border">
+                                <div class="col-md-9 mb-3 mb-md-0">
+                                    <label class="form-label">URL de la Imagen (Link Público)</label>
+                                    <input type="url" th:field="*{imagenUrl}" class="form-control rounded-3" 
+                                           placeholder="https://imgur.com/tu-imagen.jpg" required>
+                                    <div class="form-text">Pega el link de la imagen subida a la nube (Imgur, PostImages, etc).</div>
                                 </div>
 
-                                <div class="col-md-4 text-md-center">
+                                <div class="col-md-3 text-md-center">
                                     <div class="form-check form-switch d-inline-block">
                                         <input class="form-check-input" type="checkbox" th:field="*{publicado}" id="publicado">
-                                        <label class="form-check-label fw-bold" for="publicado">Publicar</label>
+                                        <label class="form-check-label text-white fw-bold" for="publicado">PUBLICAR</label>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +99,7 @@
                             <hr class="my-4 opacity-25">
 
                             <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
-                                <a th:href="@{/productos/catalogo}" class="btn btn-outline-secondary px-4 rounded-pill">
+                                <a th:href="@{/recetario}" class="btn btn-outline-secondary px-4 rounded-pill">
                                     <i class="bi bi-x-circle me-2"></i>Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-danger px-5 fw-bold shadow-sm rounded-pill">

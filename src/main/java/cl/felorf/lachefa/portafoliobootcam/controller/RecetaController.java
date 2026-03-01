@@ -75,16 +75,14 @@ public class RecetaController {
 
     /**
      * Procesa el guardado de la receta.
-     * Redirige a la página de construcción tras la persistencia.
+
      */
     @PostMapping("/productos/recetas/guardar")
-    public String guardarReceta(@ModelAttribute Receta receta,
-                                @RequestParam(value = "archivoImagen", required = false) MultipartFile imagen,
-                                RedirectAttributes flash) {
+    public String guardarReceta(@ModelAttribute Receta receta, RedirectAttributes flash) {
         recetaService.guardar(receta);
         flash.addFlashAttribute("success", "¡Receta guardada!");
         // Redirección explícita a la URL mapeada
-        return "redirect:/construccion"; 
+        return "redirect:/recetario"; 
     }
 
     @GetMapping("/productos/recetas/eliminar/{id}")

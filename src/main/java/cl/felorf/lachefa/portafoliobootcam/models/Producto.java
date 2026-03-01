@@ -31,6 +31,8 @@ public class Producto {
 	
 	// Campo vital para el catálogo y ranking
 	private String categoria;
+	
+	private String imagenUrl;
 
     /** Estado de visibilidad en el catálogo */
     @Column(nullable = false)
@@ -83,4 +85,10 @@ public class Producto {
 
     public Integer getNivelPicor() { return nivelPicor; }
     public void setNivelPicor(Integer nivelPicor) { this.nivelPicor = nivelPicor; }
+    
+    public String getImagenUrl() {
+        return imagenUrl;}
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
 }

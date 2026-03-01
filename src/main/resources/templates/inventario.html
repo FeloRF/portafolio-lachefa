@@ -12,6 +12,8 @@
         .kpi-card:hover { transform: translateY(-5px); }
         .btn-admin-action { padding: 0.5rem 1.2rem; font-weight: 600; }
         .table-admin thead { background-color: #212529; color: white; }
+        /* Miniatura para la imagen por URL */
+        .img-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
     </style>
 </head>
 <body class="bg-light">
@@ -30,7 +32,7 @@
     				<i class="bi bi-plus-circle me-1"></i> Nueva Salsa
                 </a>
                 
-                <a th:href="@{/nueva-receta}" class="btn btn-danger btn-admin-action shadow-sm">
+                <a th:href="@{/productos/nueva-receta}" class="btn btn-danger btn-admin-action shadow-sm">
                     <i class="bi bi-journal-plus me-1"></i> Nueva Receta 🌶️
                 </a>
 
@@ -64,9 +66,6 @@
                         <div class="col-auto">
                             <button type="submit" class="btn btn-dark px-4">Filtrar</button>
                         </div>
-                        <div class="col-auto" th:if="${termino != null && termino != ''}">
-                            <a th:href="@{/productos/catalogo}" class="btn btn-link text-danger text-decoration-none small">Ver todo</a>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -93,33 +92,21 @@
             </div>
         </div>
 
-        <div th:if="${criticos > 0}" class="alert alert-danger d-flex align-items-center shadow-sm mb-4 border-0" role="alert">
-            <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
-            <div>
-                <strong class="text-uppercase">⚠ ¡Atención Cocinero!</strong> 
-                Tienes <span class="badge bg-danger" th:text="${criticos}"></span> productos agotándose. Revisa el stock marcado en rojo.
-            </div>
-        </div>
-
-        <div class="card shadow-sm mb-4 border-0 overflow-hidden">
+        <div class="card shadow-sm mb-4 border-0 overflow-hidden" th:if="${ranking != null and !#maps.isEmpty(ranking)}">
             <div class="card-header bg-dark text-white py-3">
-                <h5 class="mb-0 fs-6"><i class="bi bi-fire me-2 text-warning"></i> SALSAS ESTRELLA (RANKING DE VENTAS)</h5>
+                <h5 class="mb-0 fs-6"><i class="bi bi-fire me-2 text-warning"></i> SALSAS ESTRELLA</h5>
             </div>
             <div class="card-body bg-white p-0">
                 <div class="row g-0">
-                    <div th:each="entry, iterStat : ${ranking}" class="col-md-4 border-end border-bottom">
-                        <div class="p-3 d-flex justify-content-between align-items-center">
+                    <div th:each="entry : ${ranking}" class="col-md-4 border-end border-bottom">
+                        <div class="p-3 d-flex justify-content-between align-items-center" th:if="${entry.key != null}">
                             <div>
                                 <span class="fw-bold d-block text-dark" th:text="${entry.key.nombre}"></span>
-                                <small class="text-muted text-uppercase fw-semibold" th:text="${entry.key.categoria}" style="font-size: 0.7rem;"></small>
+                                <small class="text-muted text-uppercase" th:text="${entry.key.categoria}" style="font-size: 0.7rem;"></small>
                             </div>
-                            <span class="badge bg-danger rounded-pill px-3 py-2" th:text="${entry.value + ' unid.'}"></span>
+                            <span class="badge bg-danger rounded-pill" th:text="${entry.value + ' unid.'}"></span>
                         </div>
                     </div>
-                </div>
-                <div th:if="${#maps.isEmpty(ranking)}" class="p-4 text-center text-muted">
-                    <i class="bi bi-graph-down fs-2 d-block mb-2"></i>
-                    No hay datos de ventas recientes.
                 </div>
             </div>
         </div>
@@ -135,8 +122,9 @@
                 <table class="table table-hover align-middle mb-0 table-admin">
                     <thead>
                         <tr>
-                            <th class="ps-3 border-0">Salsa / Descripción</th>
-                            <th class="border-0">Nivel de Picor</th>
+                            <th class="ps-3 border-0">Imagen</th>
+                            <th class="border-0">Salsa / Descripción</th>
+                            <th class="border-0">Picor</th>
                             <th class="text-center border-0">Stock</th>
                             <th class="text-end border-0">Precio</th>
                             <th class="text-center pe-3 border-0">Acciones</th>
@@ -144,53 +132,37 @@
                     </thead>
                     <tbody class="border-top-0">
                         <tr th:each="p : ${productos}">
-                            <td class="ps-3 py-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="fw-bold text-dark" th:text="${p.nombre}"></span>
-                                    <span th:if="${not #maps.isEmpty(ranking) and p.id == ranking.keySet().iterator().next().id}" 
-                                          class="badge bg-warning text-dark ms-2 shadow-sm" style="font-size: 0.65rem;">👑 TOP 1</span>
-                                </div>
-                                <small class="text-muted d-block text-truncate" style="max-width: 300px;" th:text="${p.descripcion}"></small>
+                            <td class="ps-3">
+                                <img th:src="${p.imagenUrl != null && p.imagenUrl != '' ? p.imagenUrl : '/img/no-image.png'}" 
+                                     class="img-thumb" alt="Salsa">
                             </td>
                             <td>
-                                <div class="text-nowrap">
-                                    <span th:if="${p.nivelPicor > 0}">
-                                        <span th:each="i : ${#numbers.sequence(1, p.nivelPicor)}">🌶️</span>
-                                    </span>
-                                    <span th:if="${p.nivelPicor == 0}" class="text-muted fst-italic small">NO PICA</span>
-                                    <small class="text-muted ms-1" th:text="'(' + ${p.nivelPicor} + '/5)'"></small>
-                                </div>
+                                <span class="fw-bold text-dark d-block" th:text="${p.nombre}"></span>
+                                <small class="text-muted text-truncate d-block" style="max-width: 250px;" th:text="${p.descripcion}"></small>
+                            </td>
+                            <td>
+                                <span th:if="${p.nivelPicor > 0}">
+                                    <span th:each="i : ${#numbers.sequence(1, p.nivelPicor)}">🌶️</span>
+                                </span>
                             </td>
                             <td class="text-center">
                                 <span th:text="${p.stock}" 
-                                      th:classappend="${p.stock <= 5} ? 'badge bg-danger px-3 py-2' : (${p.stock < 15} ? 'badge bg-warning text-dark px-3 py-2' : 'fw-bold text-dark')"></span>
+                                      th:classappend="${p.stock <= 5} ? 'badge bg-danger' : 'fw-bold text-dark'"></span>
                             </td>
                             <td class="text-end fw-bold text-dark" th:text="${'$ ' + #numbers.formatDecimal(p.precio, 0, 'POINT', 0, 'COMMA')}"></td>
                             <td class="text-center pe-3">
-                                <div class="btn-group shadow-sm">
-                                    <a th:href="@{/ventas/vender/{id}(id=${p.id})}" class="btn btn-sm btn-success" title="Venta directa">
-                                        <i class="bi bi-cart-plus"></i>
-                                    </a>
-                                    <a th:href="@{/productos/editar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-dark" title="Editar">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-danger" title="Mover a Papelera">
-                                        <i class="bi bi-trash3"></i>
-                                    </a>
+                                <div class="btn-group">
+                                    <a th:href="@{/ventas/vender/{id}(id=${p.id})}" class="btn btn-sm btn-success"><i class="bi bi-cart-plus"></i></a>
+                                    <a th:href="@{/productos/editar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-dark"><i class="bi bi-pencil-square"></i></a>
+                                    <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></a>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div th:if="${#lists.isEmpty(productos)}" class="p-5 text-center bg-white border-top">
-                <i class="bi bi-search fs-1 text-muted opacity-25 d-block mb-3"></i>
-                <p class="text-muted">No encontramos salsas que coincidan con "<span th:text="${termino}"></span>".</p>
-                <a th:href="@{/productos/catalogo}" class="btn btn-sm btn-dark px-4">Recargar Catálogo</a>
-            </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,98 @@
+@charset "UTF-8";
+/* tienda-premium.css */
+body {
+    background-color: #0d0d0d; /* Fondo negro profundo */
+    color: #f8f9fa;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Reutilizamos los blobs animados para dar vida al fondo */
+.bg-blobs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    filter: blur(100px);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.blob { position: absolute; border-radius: 50%; animation: move 25s infinite alternate; }
+.blob-1 { width: 500px; height: 500px; background: radial-gradient(circle, #ff4d00, #ff8c00); top: -10%; right: -10%; }
+.blob-2 { width: 450px; height: 450px; background: radial-gradient(circle, #e63946, #9d0208); bottom: -10%; left: -10%; animation-delay: -7s; }
+
+@keyframes move {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(60px, 120px) scale(1.1); }
+}
+
+/* Tarjetas Estilo Glassmorphism */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 24px !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    height: 100%;
+}
+
+.glass-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 193, 7, 0.4) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card img {
+    border-radius: 20px 20px 0 0;
+    object-fit: cover;
+    height: 220px;
+    transition: transform 0.5s;
+}
+
+.glass-card:hover img { transform: scale(1.05); }
+
+/* Títulos y Textos */
+.text-gourmet { font-family: 'Playfair Display', serif; font-weight: 800; color: #fff; }
+.price-tag { font-size: 1.4rem; color: #ffc107; font-weight: 700; }
+
+/* Botón Añadir/Ver */
+.btn-gourmet {
+    background: linear-gradient(45deg, #d90429, #ef233c);
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    padding: 10px 25px;
+    transition: 0.3s;
+}
+
+.btn-gourmet:hover {
+    background: linear-gradient(45deg, #ef233c, #ff4d00);
+    box-shadow: 0 4px 15px rgba(239, 35, 60, 0.4);
+    transform: scale(1.05);
+}
+
+/* Versión especial del glass panel para el resumen de orden */
+.glass-summary {
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 30px !important;
+    padding: 2.5rem !important;
+}
+
+.total-label {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.total-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #ffc107; /* El dorado de La Chefa */
+    text-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+}

@@ -1,0 +1,85 @@
+@charset "UTF-8";
+/* admin-forms.css */
+
+body {
+    background-color: #0a0a0a; /* Corregido typo */
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;	
+}
+
+/* 1. Animación para el Blob 1 (Movimiento en diagonal superior) */
+@keyframes move-1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(10vw, -10vh) scale(1.1); }
+    100% { transform: translate(-5vw, 5vh) scale(1); }
+}
+
+/* 2. Animación para el Blob 2 (Movimiento en diagonal inferior) */
+@keyframes move-2 {
+    0% { transform: translate(0, 0) scale(1.1); }
+    50% { transform: translate(-15vw, 15vh) scale(1); }
+    100% { transform: translate(5vw, -5vh) scale(1.2); }
+}
+
+.bg-blobs {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    filter: blur(80px); 
+    opacity: 0.6;
+    background-color: #0a0a0a; /* Aseguramos el fondo aquí también */
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform; /* Optimización para que el movimiento sea fluido */
+}
+
+.blob-1 {
+    width: 450px; height: 450px;
+    background: radial-gradient(circle, #ff4d00, #ff8c00);
+    top: -100px; 
+    right: -50px;
+    /* Aplicamos move-1 con un tiempo distinto */
+    animation: move-1 5s infinite alternate ease-in-out; 
+}
+
+.blob-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #e63946, #ffb703);
+    bottom: -50px; 
+    left: -50px;
+    /* Aplicamos move-2 y un desfase para que no vayan a la par */
+    animation: move-1 2s infinite alternate ease-in-out;
+    animation-delay: -5s; /* El delay negativo hace que empiece ya moviéndose */
+}
+
+@keyframes move {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(50px, 100px) scale(1.2); }
+}
+
+/* Efecto Glassmorphism para el Formulario */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    color: white !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+.glass-panel label, .glass-panel h4 {
+    color: #f1f1f1;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.glass-input::placeholder { color: rgba(255, 255, 255, 0.4); }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments :: head_comun}"></th:block>
+    <title>En Mantención - La Chefa</title>
+    <style>
+        body {
+            background-color: #ffffff !important; 
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chefita-container {
+            text-align: center;
+        }
+        .text-chefita {
+            color: #d94350; 
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+        }
+        .img-chefita {
+            max-width: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chefita-container">
+        <h1 class="display-4 text-chefita mb-2">¡Cocinando nuevas funciones!</h1>
+        
+        <img th:src="@{/img/mantencion.jpg}" alt="La Chefita" class="img-chefita">
+
+        <div class="mt-2">
+            <p class="lead fw-bold text-secondary mb-4">Esta sección estará lista muy pronto.</p>
+            <a th:href="@{/}" class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm fw-bold">
+                <i class="bi bi-house-door me-2"></i> VOLVER AL HOME
+            </a>
+        </div>
+    </div>
+</body>
+</html>

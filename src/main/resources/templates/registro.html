@@ -1,50 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:replace="~{fragments :: head_comun}"></th:block>
-    <title>Únete a La Chefa</title>
+    <title>Únete a La Chefa 🌶️</title>
+    
+	    <style>
+	    /* Fondo Sólido Profundo */
+	    body { 
+	        background-color: #0a0a0a !important; 
+	        color: #ffffff !important; 
+	    }
+	    
+	    .card-registro { 
+	        background-color: #161616 !important; 
+	        border: 1px solid #333 !important; 
+	        border-radius: 20px;
+	    }
+	
+	    /* TICKET: Texto en Plata/Blanco para el subtítulo */
+	    .text-plata-lachefa {
+	        color: #e0e0e0 !important; /* Blanco humo/Plata suave */
+	        font-weight: 300;
+	        letter-spacing: 0.5px;
+	    }
+	
+	    /* TICKET: Labels en Amarillo para máximo contraste */
+	    .form-label { 
+	        color: #ffc107 !important; /* Amarillo Gold */
+	        font-weight: 700;
+	        font-size: 0.85rem;
+	        text-transform: uppercase;
+	    }
+	
+	    /* Inputs y Placeholders */
+	    .form-control { 
+	        background-color: #252525 !important; 
+	        border: 1px solid #444 !important; 
+	        color: #ffffff !important; 
+	    }
+	
+	    .form-control::placeholder {
+	        color: #777 !important; /* Texto de ejemplo más tenue */
+	    }
+	
+	    .btn-registrar {
+	        background-color: #cc1d1d;
+	        border: none;
+	        border-radius: 50px;
+	        font-weight: 800;
+	    }
+	</style>
 </head>
-<body class="bg-light">
-    <div th:replace="~{fragments :: nav_publico}"></div>
+<body>
+    <div th:replace="~{fragments :: header_premium}"></div>
+
+    <div style="height: 120px;"></div>
 
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <div class="card border-0 shadow-lg">
+                <div class="card card-registro shadow-lg">
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
-                            <h2 class="fw-bold">Crear Cuenta 🌶️</h2>
-                            <p class="text-muted">Únete para ver recetas exclusivas y guardar tus favoritos.</p>
-                        </div>
+						    <h2 class="fw-bold text-white" style="font-family: 'Playfair Display', serif;">Crear Cuenta 🌶️</h2>
+						    <p class="text-plata-lachefa">Únete para ver recetas exclusivas y guardar tus favoritos.</p>
+						</div>
 
                         <form th:action="@{/registro}" method="post">
                             <div class="mb-3">
-                                <label class="form-label">Nombre Completo</label>
+                                <label class="form-label fw-bold">Nombre Completo</label>
                                 <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Correo Electrónico</label>
+                                <label class="form-label fw-bold">Correo Electrónico</label>
                                 <input type="email" name="email" class="form-control" placeholder="tu@email.com" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Contraseña</label>
+                                <label class="form-label fw-bold">Contraseña</label>
                                 <input type="password" name="password" class="form-control" required>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label">Dirección de Despacho</label>
-                                <textarea name="direccion" class="form-control" rows="2" placeholder="Tu calle, número y comuna"></textarea>
+                                <label class="form-label fw-bold">Dirección de Despacho</label>
+                                <textarea name="direccion" class="form-control" rows="2" placeholder="Calle, número y comuna"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">Registrarme</button>
+                            <button type="submit" class="btn btn-registrar w-100 py-2 fw-bold text-white">Registrarme</button>
                         </form>
                         
                         <div class="text-center mt-4">
-                            <span class="small text-muted">¿Ya tienes cuenta? <a th:href="@{/login}" class="text-danger fw-bold">Inicia Sesión</a></span>
+                            <span class="small text-muted">¿Ya tienes cuenta? 
+                                <a th:href="@{/login}" class="text-danger fw-bold text-decoration-none">Inicia Sesión</a>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div th:replace="~{fragments :: menu_lateral}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

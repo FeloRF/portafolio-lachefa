@@ -8,26 +8,29 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.nio.file.*;
 import java.util.Optional;
 
+/**
+ * Controlador para la gestión de recetas de La Chefa.
+ * Implementa la redirección temporal a la página de construcción tras guardar.
+ * * @author Felipe Rojas Flores (Felo)
+ */
 @Controller
 public class RecetaController {
 
     private final RecetaService recetaService;
 
+    /**
+     * Inyección por constructor para favorecer la inmutabilidad.
+     */
     public RecetaController(RecetaService recetaService) {
         this.recetaService = recetaService;
     }
 
     // ==========================================================
-    // ZONA PÚBLICA (Accesible para todos)
+    // ZONA PÚBLICA
     // ==========================================================
 
-    /** * URL: localhost:8081/recetario 
-     * Archivo físico: templates/recetario.html
-     */
     @GetMapping("/recetario")
     public String listarRecetasPublicas(Model model) {
         model.addAttribute("recetas", recetaService.listarTodas());
@@ -35,9 +38,6 @@ public class RecetaController {
         return "recetario"; 
     }
 
-    /** * URL: localhost:8081/recetario/paso-a-paso/{id}
-     * Archivo físico: templates/tienda/detalle_receta.html
-     */
     @GetMapping("/recetario/paso-a-paso/{id}")
     public String verPasoAPaso(@PathVariable Long id, Model model, RedirectAttributes flash) {
         Optional<Receta> receta = recetaService.buscarPorId(id);
@@ -46,16 +46,14 @@ public class RecetaController {
             return "redirect:/recetario";
         }
         model.addAttribute("receta", receta.get());
-        return "tienda/detalle_receta"; 
+        return "redirect:/construccion"; 
     }
+    
 
     // ==========================================================
-    // ZONA ADMINISTRATIVA (Protegida por SecurityConfig)
+    // ZONA ADMINISTRATIVA
     // ==========================================================
 
-    /** * RUTA SOLICITADA: localhost:8081/nueva-receta 
-     * Archivo físico: templates/nueva-receta.html
-     */
     @GetMapping("/nueva-receta")
     public String nuevaReceta(Model model) {
         model.addAttribute("receta", new Receta());
@@ -63,8 +61,6 @@ public class RecetaController {
         return "nueva-receta";
     }
 
-    /** * URL: localhost:8081/productos/recetas/editar/{id}
-     */
     @GetMapping("/productos/recetas/editar/{id}")
     public String editarReceta(@PathVariable Long id, Model model, RedirectAttributes flash) {
         Optional<Receta> receta = recetaService.buscarPorId(id);
@@ -77,46 +73,35 @@ public class RecetaController {
         return "nueva-receta";
     }
 
-    /** * ACCIÓN: Guardar datos y procesar imagen
-     * th:action="@{/productos/recetas/guardar}"
+    /**
+     * Procesa el guardado de la receta.
+     * Redirige a la página de construcción tras la persistencia.
      */
     @PostMapping("/productos/recetas/guardar")
     public String guardarReceta(@ModelAttribute Receta receta,
-                                @RequestParam("archivoImagen") MultipartFile imagen,
+                                @RequestParam(value = "archivoImagen", required = false) MultipartFile imagen,
                                 RedirectAttributes flash) {
-        try {
-            if (imagen != null && !imagen.isEmpty()) {
-                String rutaRelativa = "src/main/resources/static/img/recetas/";
-                String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
-                Path rutaAbsoluta = Paths.get(rutaRelativa + nombreArchivo);
-
-                Files.createDirectories(rutaAbsoluta.getParent());
-                Files.copy(imagen.getInputStream(), rutaAbsoluta, StandardCopyOption.REPLACE_EXISTING);
-
-                receta.setImagenUrl("/img/recetas/" + nombreArchivo);
-            } else if (receta.getId() != null) {
-                // Mantenemos la imagen existente en caso de edición
-                recetaService.buscarPorId(receta.getId()).ifPresent(r -> receta.setImagenUrl(r.getImagenUrl()));
-            }
-
-            recetaService.guardar(receta);
-            flash.addFlashAttribute("success", "¡Receta '" + receta.getNombre() + "' guardada! 🔥");
-
-        } catch (IOException e) {
-            flash.addFlashAttribute("error", "Error al procesar la imagen.");
-            return "redirect:/nueva-receta";
-        }
-        return "redirect:/recetario";
+        recetaService.guardar(receta);
+        flash.addFlashAttribute("success", "¡Receta guardada!");
+        // Redirección explícita a la URL mapeada
+        return "redirect:/construccion"; 
     }
 
-    /** * URL: localhost:8081/productos/recetas/eliminar/{id}
-     */
     @GetMapping("/productos/recetas/eliminar/{id}")
     public String eliminarReceta(@PathVariable Long id, RedirectAttributes flash) {
         if (recetaService.existePorId(id)) {
             recetaService.eliminar(id);
             flash.addFlashAttribute("success", "Receta eliminada correctamente.");
         }
-        return "redirect:/recetario";
+        // CORRECCIÓN: Debe ser redirect para que pase por el filtro de seguridad correctamente
+        return "redirect:/construccion"; 
+    }
+    
+    /**
+     * TICKET 001: Mapeo de la página en construcción (Fondo Blanco).
+     */
+    @GetMapping("/construccion")
+    public String mostrarConstruccion() {
+        return "construccion"; 
     }
 }

@@ -16,15 +16,15 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http
-	        .authorizeHttpRequests(auth -> auth
-	            // 1. ZONA PÚBLICA: Usamos wildcards (**) para evitar el error 403 por barras extras
-	            .requestMatchers("/", "/home", "/login", "/registro", "/css/**", "/js/**", "/img/**").permitAll()
-	            .requestMatchers("/catalogoLaChefa/**", "/recetario").permitAll() // Público
+	    .authorizeHttpRequests(auth -> auth
+	            // Prioridad 1: Absolutamente público (incluyendo la página de construcción)
+	            .requestMatchers("/css/**", "/js/**", "/img/**","/registro", "/construccion").permitAll()
+	            .requestMatchers("/", "/home", "/login", "/registro", "/recetario").permitAll()
+	            .requestMatchers("/catalogoLaChefa/**").permitAll()
 	            
-	            // 2. ZONA ADMINISTRATIVA: Blindamos específicamente la gestión
-	            .requestMatchers("/productos/**", "/ventas/**", "/nueva-receta").hasAuthority("ADMIN")
+	            // Prioridad 2: Protegido
+	            .requestMatchers("/nueva-receta", "/productos/**", "/ventas/**").hasAuthority("ADMIN")
 	            
-	            // 3. ZONA CLIENTE: El resto requiere autenticación
 	            .anyRequest().authenticated()
 	        )
 	        .exceptionHandling(exception -> exception.accessDeniedPage("/")) 

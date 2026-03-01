@@ -2,42 +2,85 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="~{fragments :: head_comun}"></th:block>
-    <title>En Mantención - La Chefa</title>
+    <title>Cocinando - La Chefa</title>
+    
     <style>
+        /* Diseño Limpio para integrar la ilustración */
         body {
             background-color: #ffffff !important; 
+            color: #333333;
             height: 100vh;
             margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            font-family: 'Montserrat', sans-serif;
         }
-        .chefita-container {
+
+        .container-main {
             text-align: center;
+            max-width: 800px;
+            padding: 20px;
         }
-        .text-chefita {
-            color: #d94350; 
+
+        h1 {
             font-family: 'Playfair Display', serif;
-            font-weight: 800;
+            font-weight: 900;
+            color: #d94350; /* Rojo suave de la ilustración */
+            margin-bottom: 0.5rem;
         }
+
+        /* La imagen se presenta sin bordes para fundirse con el fondo */
         .img-chefita {
-            max-width: 500px;
-            width: 100%;
+            max-width: 100%;
+            height: auto;
+            /* Eliminamos sombras para un look plano y limpio */
+        }
+
+        .lead-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        .btn-home {
+            background-color: #d94350;
+            border: none;
+            padding: 15px 50px;
+            font-weight: 700;
+            color: white !important;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-home:hover {
+            background-color: #b33642;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(217, 67, 80, 0.2);
         }
     </style>
 </head>
 <body>
-    <div class="chefita-container">
-        <h1 class="display-4 text-chefita mb-2">¡Cocinando nuevas funciones!</h1>
-        
-        <img th:src="@{/img/mantencion.jpg}" alt="La Chefita" class="img-chefita">
 
-        <div class="mt-2">
-            <p class="lead fw-bold text-secondary mb-4">Esta sección estará lista muy pronto.</p>
-            <a th:href="@{/}" class="btn btn-danger btn-lg rounded-pill px-5 shadow-sm fw-bold">
-                <i class="bi bi-house-door me-2"></i> VOLVER AL HOME
+    <div class="container-main">
+        <h1 class="display-3">¡Cocinando nuevas funciones!</h1>
+        
+        <img th:src="@{/img/mantencion.jpg}" alt="La Chefita Cocinando" class="img-chefita">
+
+        <div class="mt-4">
+            <p class="lead-text">
+                Esta sección estará lista muy pronto. 
+                <br>Estamos ajustando el picante para ti.
+            </p>
+
+            <a th:href="@{/}" class="btn btn-home btn-lg rounded-pill shadow-sm">
+                <i class="bi bi-house-door-fill me-2"></i> VOLVER AL HOME
             </a>
         </div>
     </div>
+
 </body>
 </html>

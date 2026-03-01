@@ -5,8 +5,11 @@
 <head>
     <th:block th:replace="~{fragments :: head_comun}"></th:block>
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <title>La Chefa - Home</title>
 </head>
 <body class="home-page">
+
+    <header th:replace="~{fragments :: header_premium}"></header>
 
     <div id="bgCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -22,41 +25,13 @@
         </div>
     </div>
 
-    <header class="glass-header">
-        <nav class="container-fluid d-flex justify-content-between align-items-center px-lg-5">
-            <div class="brand-logo">LA<br> CHEFA</div>
-            
-            <ul class="nav-links d-none d-md-flex">
-                <li><a th:href="@{/catalogoLaChefa}">NUESTRO CATÁLOGO</a></li>
-                <li><a th:href="@{/recetario}">RECETARIO</a></li>
-                <li sec:authorize="isAnonymous()"><a th:href="@{/registro}">CREA TU CUENTA</a></li>
-                <li sec:authorize="hasAuthority('ADMIN')">
-                    <a th:href="@{/productos/catalogo}" class="text-warning">PANEL ADMIN</a>
-                </li>
-            </ul>
-
-            <div class="login-zone">
-                <a sec:authorize="isAnonymous()" th:href="@{/login}" class="login-link">
-                    <i class="bi bi-person-circle"></i>
-                    <span>LOGIN</span>
-                </a>
-                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}" class="login-link">
-                    <i class="bi bi-person-check-fill"></i>
-                    <span>PERFIL</span>
-                </a>
-            </div>
-        </nav>
-    </header>
-
     <main class="hero-container">
         <div class="text-content">
             <h1 class="main-title">
                 LA <br> <span>CHEFA</span>
             </h1>
             <p class="main-paragraph">
-                Salsas artesanales creadas con ingredientes locales y ese toque de picor único 
-                que transforma cualquier comida en una experiencia inolvidable. Tradición y 
-                audacia en cada gota.
+                Salsas artesanales creadas con ingredientes locales...
             </p>
             <div class="mt-4">
                 <a th:href="@{/catalogoLaChefa}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
@@ -65,6 +40,8 @@
             </div>
         </div>
     </main>
+
+    <div th:replace="~{fragments :: menu_lateral}"></div>
 
     <footer class="footer-minimal">FELIPE ROJAS FLORES | LA CHEFA PROJECT 2026</footer>
 

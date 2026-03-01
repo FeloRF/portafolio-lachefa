@@ -67,6 +67,23 @@
                     <i class="bi bi-person-check-fill fs-5 text-info"></i>
                     <div style="font-size: 0.6rem; font-weight: 700;">PERFIL</div>
                 </a>
+                
+                <a th:href="@{/carrito/ver}" class="text-white text-center text-decoration-none position-relative">
+				    <i class="bi bi-cart3 fs-5 text-warning"></i>
+				    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+				          style="font-size: 0.55rem;"
+				          th:if="${session.itemsEnCarrito > 0}" 
+				          th:text="${session.itemsEnCarrito}">0</span>
+				    <div style="font-size: 0.6rem; font-weight: 700;">CARRITO</div>
+				</a>
+                
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="m-0">
+			        <button type="submit" class="btn btn-link text-white text-center text-decoration-none p-0 border-0">
+			            <i class="bi bi-box-arrow-right fs-5 text-danger"></i>
+			            <div style="font-size: 0.6rem; font-weight: 700;">SALIR</div>
+			        </button>
+			    </form>
+                
                 <a sec:authorize="isAnonymous()" th:href="@{/login}" class="text-white text-center text-decoration-none">
                     <i class="bi bi-person-circle fs-5"></i>
                     <div style="font-size: 0.6rem; font-weight: 700;">LOGIN</div>

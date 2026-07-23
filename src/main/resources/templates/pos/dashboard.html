@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sala de Control POS v2.0 - La Chefa</title>
+    <!-- Incluye Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-main: #FDFBF7; /* Marfil Base */
+            --bg-card: #F9F3E3; /* Crema Maíz */
+            --brand-brown: #4A3B32; /* Café Tierra */
+            --cta-danger-red: #D32F2F; /* Rojo Corazón */
+            --accent-gold: #C5A059;
+            --neutral-gray: #8A8580;
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--brand-brown);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--brand-brown);
+            font-weight: 700;
+        }
+        .card-custom {
+            background-color: #fff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        /* Monitor 1 - HUD */
+        .kpi-card {
+            background-color: var(--bg-card);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        /* Buttons */
+        .btn-cta {
+            background-color: var(--cta-danger-red);
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+        .btn-cta:hover {
+            background-color: #B71C1C;
+            color: white;
+        }
+        .btn-gestionar {
+            background-color: var(--brand-brown);
+            color: white;
+            font-weight: 600;
+        }
+        .btn-gestionar:hover {
+            background-color: #3e3129;
+            color: white;
+        }
+        .progress-bar-custom {
+            background-color: var(--accent-gold);
+        }
+        .table-custom th {
+            background-color: var(--brand-brown);
+            color: white;
+            border-bottom: none;
+        }
+        .map-icon {
+            color: var(--cta-danger-red);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4 px-4">
+        
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-speedometer2"></i> Sala de Control POS (Jornada Actual)</h2>
+            <a th:href="@{/productos/catalogo}" class="btn btn-outline-secondary px-4 py-2 shadow-sm rounded-pill"><i class="bi bi-arrow-left"></i> Volver</a>
+        </div>
+
+        <!-- MONITOR 1: HUD KPI -->
+        <div class="row mb-4 g-3">
+            <div class="col-md-3">
+                <div class="card kpi-card p-3 text-center h-100">
+                    <h6 class="text-muted text-uppercase mb-2 fw-bold">Venta Total Jornada</h6>
+                    <h2 class="mb-0 text-success">$<span th:text="${#numbers.formatDecimal(kpiVentaTotal, 0, 'POINT', 0, 'COMMA')}">0</span></h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3 text-center h-100">
+                    <h6 class="text-muted text-uppercase mb-2 fw-bold">POS Activos</h6>
+                    <h2 class="mb-0 text-dark" th:text="${kpiPosActivos}">0</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3 text-center h-100">
+                    <h6 class="text-muted text-uppercase mb-2 fw-bold">Unidades Mermadas/Dev.</h6>
+                    <h2 class="mb-0 text-danger" th:text="${kpiMermas} + ' un'">0 un</h2>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card kpi-card p-3 text-center h-100">
+                    <h6 class="text-muted text-uppercase mb-2 fw-bold">Ticket Promedio</h6>
+                    <h2 class="mb-0 text-primary">$<span th:text="${#numbers.formatDecimal(kpiTicketPromedioGlobal, 0, 'POINT', 0, 'COMMA')}">0</span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- MONITOR 2: Gestión Activa de POS -->
+            <div class="col-lg-7">
+                <div class="card card-custom h-100 rounded-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-shop"></i> Gestión Activa de Locaciones</h4>
+                        <a th:href="@{/productos/catalogo}" class="btn btn-sm btn-outline-dark rounded-pill">+ Añadir POS</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle table-custom">
+                                <thead class="rounded-top">
+                                    <tr>
+                                        <th class="rounded-start">Locación</th>
+                                        <th>Estado</th>
+                                        <th style="min-width: 160px;">Ventas vs Meta</th>
+                                        <th class="text-center">Mapa</th>
+                                        <th class="text-end rounded-end">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="pos : ${listaPos}">
+                                        <td class="fw-bold text-dark" th:text="${pos.nombre}">POS</td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:text="${pos.estado}"
+                                                  th:style="${pos.estado.name() == 'ACTIVO' ? 'background-color: var(--accent-gold);' : 'background-color: var(--neutral-gray);'}">
+                                                ACTIVO
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <!-- Barra de progreso simulada respecto a Meta -->
+                                            <div class="d-flex justify-content-between mb-1" style="font-size: 0.8rem; font-weight: 600;">
+                                                <span>--%</span>
+                                                <span class="text-muted">Meta: $<span th:text="${pos.metaVentas != null ? #numbers.formatDecimal(pos.metaVentas, 0, 'POINT', 0, 'COMMA') : '0'}"></span></span>
+                                            </div>
+                                            <div class="progress bg-light" style="height: 8px;">
+                                                <div class="progress-bar progress-bar-custom" role="progressbar" style="width: 50%;"></div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a th:if="${pos.urlMapa != null and !pos.urlMapa.isEmpty()}" th:href="${pos.urlMapa}" target="_blank" class="map-icon">
+                                                <i class="bi bi-geo-alt-fill"></i>
+                                            </a>
+                                            <span th:unless="${pos.urlMapa != null and !pos.urlMapa.isEmpty()}" class="text-muted"><i class="bi bi-geo-alt"></i></span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a th:href="@{/admin/pos/{id}/gestion(id=${pos.id})}" class="btn btn-sm btn-gestionar rounded-pill px-3">Gestionar</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MONITOR 3: Gestión de Vendedores/Crew -->
+            <div class="col-lg-5">
+                <div class="card card-custom h-100 rounded-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-people"></i> Gestión de Crew</h4>
+                        <a th:href="@{/usuarios}" class="btn btn-cta btn-sm rounded-pill px-3">+ Añadir Vendedor</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle table-custom">
+                                <thead>
+                                    <tr>
+                                        <th class="rounded-start">Vendedor</th>
+                                        <th class="text-center">Transacciones</th>
+                                        <th class="text-end rounded-end">Total Recaudado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="entry : ${rankingVendedores}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-light rounded-circle p-2 me-2 text-center" style="width: 35px; height: 35px;">
+                                                    <i class="bi bi-person-fill text-secondary"></i>
+                                                </div>
+                                                <span class="fw-bold text-dark" th:text="${entry.key.nombreCompleto}">Nombre</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center text-muted fw-bold" th:text="${transaccionesPorVendedor.get(entry.key)}">0</td>
+                                        <td class="text-end fw-bold text-success">$<span th:text="${#numbers.formatDecimal(entry.value, 0, 'POINT', 0, 'COMMA')}">0</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MONITOR 4: Inteligencia / Rankings -->
+        <div class="row g-4">
+            <div class="col-12">
+                <h4 class="mb-3 text-uppercase" style="color: var(--brand-brown); border-bottom: 2px solid var(--accent-gold); padding-bottom: 5px;">Inteligencia Operativa</h4>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card card-custom p-3 h-100">
+                    <h5 class="mb-3"><i class="bi bi-trophy text-warning"></i> Top Locaciones</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0" th:each="pos, iter : ${listaPos}" th:if="${iter.index < 3}">
+                            <span class="fw-bold"><span th:text="${iter.index + 1}"></span>. <span th:text="${pos.nombre}"></span></span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-star-fill text-warning"></i></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-custom p-3 h-100">
+                    <h5 class="mb-3"><i class="bi bi-award text-primary"></i> Top Vendedores</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0" th:each="entry, iter : ${rankingVendedores}" th:if="${iter.index < 3}">
+                            <span class="fw-bold"><span th:text="${iter.index + 1}"></span>. <span th:text="${entry.key.nombreCompleto}"></span></span>
+                            <span class="text-success fw-bold">$<span th:text="${#numbers.formatDecimal(entry.value, 0, 'POINT', 0, 'COMMA')}"></span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-custom p-3 h-100">
+                    <h5 class="mb-3"><i class="bi bi-fire text-danger"></i> Salsas Estrella</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0" th:each="item, iter : ${rankingSalsas}">
+                            <span class="fw-bold"><span th:text="${iter.index + 1}"></span>. <span th:text="${item.producto.nombre}"></span></span>
+                            <span class="badge bg-danger rounded-pill" th:text="${item.cantidad} + ' un'">0 un</span>
+                        </li>
+                        <li class="list-group-item border-0 px-0 text-muted small" th:if="${rankingSalsas.isEmpty()}">
+                            Sin ventas en la jornada
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

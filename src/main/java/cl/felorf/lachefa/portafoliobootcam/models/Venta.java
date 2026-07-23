@@ -21,6 +21,14 @@ public class Venta {
 	@JoinColumn(name = "usuario_id", nullable = true)
 	private Usuario cliente;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "punto_venta_id")
+	private PuntoVenta puntoVenta;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "vendedor_id")
+	private Usuario vendedor;
+	
 	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DetalleVenta> detalles = new ArrayList<>();
 
@@ -44,6 +52,12 @@ public class Venta {
 
 	public Usuario getCliente() { return cliente; }
 	public void setCliente(Usuario cliente) { this.cliente = cliente; }
+
+	public PuntoVenta getPuntoVenta() { return puntoVenta; }
+	public void setPuntoVenta(PuntoVenta puntoVenta) { this.puntoVenta = puntoVenta; }
+
+	public Usuario getVendedor() { return vendedor; }
+	public void setVendedor(Usuario vendedor) { this.vendedor = vendedor; }
 
 	public List<DetalleVenta> getDetalles() { return detalles; }
 	public void setDetalles(List<DetalleVenta> detalles) { this.detalles = detalles; }

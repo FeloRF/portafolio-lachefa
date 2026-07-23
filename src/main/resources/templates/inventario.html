@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,14 +8,40 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        .kpi-card { transition: transform 0.2s; border: none; }
-        .kpi-card:hover { transform: translateY(-5px); }
-        .btn-admin-action { padding: 0.5rem 1.2rem; font-weight: 600; }
-        .table-admin thead { background-color: #212529; color: white; }
+        :root {
+            --accent-gold: #C5A059;
+            --neutral-gray: #8A8580;
+        }
+
+        .kpi-card {
+            transition: transform 0.2s;
+            border: none;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .btn-admin-action {
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+        }
+
+        .table-admin thead {
+            background-color: #212529;
+            color: white;
+        }
+
         /* Miniatura para la imagen por URL */
-        .img-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
+        .img-thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
     </style>
 </head>
+
 <body class="bg-light">
 
     <div class="container py-4">
@@ -26,14 +52,18 @@
                 </h1>
                 <p class="text-muted small mb-0">Gestión de inventario, ventas y contenido culinario</p>
             </div>
-            
+
             <div class="col-md-7 d-flex justify-content-md-end gap-2 flex-wrap">
                 <a th:href="@{/productos/nuevo}" class="btn btn-dark btn-admin-action shadow-sm">
-    				<i class="bi bi-plus-circle me-1"></i> Nueva Salsa
+                    <i class="bi bi-plus-circle me-1"></i> Nueva Salsa
                 </a>
-                
+
                 <a th:href="@{/productos/nueva-receta}" class="btn btn-danger btn-admin-action shadow-sm">
                     <i class="bi bi-journal-plus me-1"></i> Nueva Receta 🌶️
+                </a>
+
+                <a th:href="@{/admin/pos/dashboard}" class="btn btn-secondary btn-admin-action shadow-sm">
+                    <i class="bi bi-shop me-1"></i> Puntos de Venta
                 </a>
 
                 <div class="vr mx-2 d-none d-md-block"></div>
@@ -58,9 +88,11 @@
                     <form th:action="@{/productos/catalogo}" method="get" class="row g-2 align-items-center">
                         <div class="col flex-grow-1">
                             <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                                <input type="text" name="termino" th:value="${termino}" 
-                                       class="form-control border-start-0" placeholder="Buscar salsa por nombre o categoría...">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i
+                                        class="bi bi-search"></i></span>
+                                <input type="text" name="termino" th:value="${termino}"
+                                    class="form-control border-start-0"
+                                    placeholder="Buscar salsa por nombre o categoría...">
                             </div>
                         </div>
                         <div class="col-auto">
@@ -72,27 +104,36 @@
         </section>
 
         <div class="row g-3 mb-4 text-center">
-            <div class="col-md-4">
+            <div class="col-md-3 col-sm-6">
                 <div class="card kpi-card shadow-sm bg-white p-3 border-bottom border-dark border-4">
                     <h6 class="text-muted text-uppercase small ls-wide">💰 Valor en Bodega</h6>
-                    <h3 class="fw-bold mb-0 text-dark" th:text="${'$ ' + #numbers.formatDecimal(valorBodega, 0, 'POINT', 0, 'COMMA')}"></h3>
+                    <h3 class="fw-bold mb-0 text-dark"
+                        th:text="${'$ ' + #numbers.formatDecimal(valorBodega, 0, 'POINT', 0, 'COMMA')}"></h3>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 col-sm-6">
                 <div class="card kpi-card shadow-sm bg-success text-white p-3">
                     <h6 class="text-uppercase small ls-wide opacity-75">📈 Ventas Totales</h6>
-                    <h3 class="fw-bold mb-0 text-white" th:text="${'$ ' + #numbers.formatDecimal(totalVentas, 0, 'POINT', 0, 'COMMA')}"></h3>
+                    <h3 class="fw-bold mb-0 text-white"
+                        th:text="${'$ ' + #numbers.formatDecimal(totalVentas, 0, 'POINT', 0, 'COMMA')}"></h3>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3 col-sm-6">
                 <div class="card kpi-card shadow-sm bg-white p-3 border-bottom border-danger border-4">
                     <h6 class="text-muted text-uppercase small ls-wide">🏺 Variedad Activa</h6>
                     <h3 class="fw-bold mb-0 text-danger" th:text="${variedad + ' SKU'}"></h3>
                 </div>
             </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="card kpi-card shadow-sm bg-white p-3 border-bottom border-secondary border-4">
+                    <h6 class="text-muted text-uppercase small ls-wide">⛺ POS Activos</h6>
+                    <h3 class="fw-bold mb-0 text-secondary" th:text="${posActivos + ' Puntos'}"></h3>
+                </div>
+            </div>
         </div>
 
-        <div class="card shadow-sm mb-4 border-0 overflow-hidden" th:if="${ranking != null and !#maps.isEmpty(ranking)}">
+        <div class="card shadow-sm mb-4 border-0 overflow-hidden"
+            th:if="${ranking != null and !#maps.isEmpty(ranking)}">
             <div class="card-header bg-dark text-white py-3">
                 <h5 class="mb-0 fs-6"><i class="bi bi-fire me-2 text-warning"></i> SALSAS ESTRELLA</h5>
             </div>
@@ -102,7 +143,8 @@
                         <div class="p-3 d-flex justify-content-between align-items-center" th:if="${entry.key != null}">
                             <div>
                                 <span class="fw-bold d-block text-dark" th:text="${entry.key.nombre}"></span>
-                                <small class="text-muted text-uppercase" th:text="${entry.key.categoria}" style="font-size: 0.7rem;"></small>
+                                <small class="text-muted text-uppercase" th:text="${entry.key.categoria}"
+                                    style="font-size: 0.7rem;"></small>
                             </div>
                             <span class="badge bg-danger rounded-pill" th:text="${entry.value + ' unid.'}"></span>
                         </div>
@@ -133,12 +175,13 @@
                     <tbody class="border-top-0">
                         <tr th:each="p : ${productos}">
                             <td class="ps-3">
-                                <img th:src="${p.imagenUrl != null && p.imagenUrl != '' ? p.imagenUrl : '/img/no-image.png'}" 
-                                     class="img-thumb" alt="Salsa">
+                                <img th:src="${p.imagenUrl != null && p.imagenUrl != '' ? p.imagenUrl : '/img/no-image.png'}"
+                                    class="img-thumb" alt="Salsa">
                             </td>
                             <td>
                                 <span class="fw-bold text-dark d-block" th:text="${p.nombre}"></span>
-                                <small class="text-muted text-truncate d-block" style="max-width: 250px;" th:text="${p.descripcion}"></small>
+                                <small class="text-muted text-truncate d-block" style="max-width: 250px;"
+                                    th:text="${p.descripcion}"></small>
                             </td>
                             <td>
                                 <span th:if="${p.nivelPicor > 0}">
@@ -146,15 +189,19 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <span th:text="${p.stock}" 
-                                      th:classappend="${p.stock <= 5} ? 'badge bg-danger' : 'fw-bold text-dark'"></span>
+                                <span th:text="${p.stock}"
+                                    th:classappend="${p.stock <= 5} ? 'badge bg-danger' : 'fw-bold text-dark'"></span>
                             </td>
-                            <td class="text-end fw-bold text-dark" th:text="${'$ ' + #numbers.formatDecimal(p.precio, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td class="text-end fw-bold text-dark"
+                                th:text="${'$ ' + #numbers.formatDecimal(p.precio, 0, 'POINT', 0, 'COMMA')}"></td>
                             <td class="text-center pe-3">
                                 <div class="btn-group">
-                                    <a th:href="@{/ventas/vender/{id}(id=${p.id})}" class="btn btn-sm btn-success"><i class="bi bi-cart-plus"></i></a>
-                                    <a th:href="@{/productos/editar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-dark"><i class="bi bi-pencil-square"></i></a>
-                                    <a th:href="@{/productos/eliminar/{id}(id=${p.id})}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></a>
+                                    <a th:href="@{/ventas/vender/{id}(id=${p.id})}" class="btn btn-sm btn-success"><i
+                                            class="bi bi-cart-plus"></i></a>
+                                    <a th:href="@{/productos/editar/{id}(id=${p.id})}"
+                                        class="btn btn-sm btn-outline-dark"><i class="bi bi-pencil-square"></i></a>
+                                    <a th:href="@{/productos/eliminar/{id}(id=${p.id})}"
+                                        class="btn btn-sm btn-outline-danger"><i class="bi bi-trash3"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -162,7 +209,288 @@
                 </table>
             </div>
         </div>
+        <!-- Modal Gestión POS -->
+        <div class="modal fade" id="modalGestionPOS" tabindex="-1" aria-labelledby="modalGestionPOSLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title" id="modalGestionPOSLabel"><i
+                                class="bi bi-shop me-2 text-warning"></i>Gestión de Puntos de Venta</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs nav-fill bg-light border-bottom" id="posTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-bold text-dark rounded-0 py-3" id="lista-tab"
+                                    data-bs-toggle="tab" data-bs-target="#lista-pos" type="button" role="tab"
+                                    aria-controls="lista-pos" aria-selected="true">
+                                    <i class="bi bi-list-ul me-1"></i> POS Activos
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold text-dark rounded-0 py-3" id="crear-tab"
+                                    data-bs-toggle="tab" data-bs-target="#crear-pos" type="button" role="tab"
+                                    aria-controls="crear-pos" aria-selected="false">
+                                    <i class="bi bi-plus-circle me-1"></i> Nuevo Punto de Venta
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold text-dark rounded-0 py-3" id="vendedores-tab"
+                                    data-bs-toggle="tab" data-bs-target="#gestion-vendedores" type="button" role="tab"
+                                    aria-controls="gestion-vendedores" aria-selected="false">
+                                    <i class="bi bi-people me-1"></i> Personal / Vendedores
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content p-4 bg-white" id="posTabsContent">
+                            <!-- Lista POS Tab -->
+                            <div class="tab-pane fade show active" id="lista-pos" role="tabpanel"
+                                aria-labelledby="lista-tab">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle border">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Nombre y Ubicación</th>
+                                                <th>Dotación</th>
+                                                <th class="text-center">Estado</th>
+                                                <th class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="pos : ${puntosVenta}">
+                                                <td>
+                                                    <span class="fw-bold text-dark d-block"
+                                                        th:text="${pos.nombre}"></span>
+                                                    <small class="text-muted" th:text="${pos.ubicacion}"></small>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-flex align-items-center mb-1">
+                                                            <i class="bi bi-person-badge fs-5 me-2 text-primary"
+                                                                title="Vendedor Principal"></i>
+                                                            <span class="fw-bold"
+                                                                th:text="${pos.vendedorPrincipal != null ? pos.vendedorPrincipal.nombreCompleto : 'Sin Asignar'}"></span>
+                                                        </div>
+                                                        <div class="d-flex align-items-center"
+                                                            th:if="${pos.asistente != null}">
+                                                            <i class="bi bi-person fs-5 me-2 text-secondary"
+                                                                title="Asistente / Apoyo"></i>
+                                                            <small class="text-muted"
+                                                                th:text="${pos.asistente.nombreCompleto}"></small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <form th:action="@{/admin/pos/{id}/estado(id=${pos.id})}" method="post" class="d-inline-block">
+                                                        <select name="nuevoEstado" class="form-select form-select-sm fw-bold border-0 shadow-sm text-center"
+                                                                onchange="this.form.submit()"
+                                                                th:style="${pos.estado.name() == 'ACTIVO' ? 'background-color: var(--accent-gold, #C5A059); color: #fff;' : 
+                                                                          (pos.estado.name() == 'EN_AGENDA' ? 'background-color: #0dcaf0; color: #000;' : 
+                                                                          (pos.estado.name() == 'CERRADO' ? 'background-color: var(--neutral-gray, #8A8580); color: #fff;' : 
+                                                                          (pos.estado.name() == 'FINALIZADO' ? 'background-color: var(--neutral-gray, #8A8580); color: #fff;' : '')))}">
+                                                            <option value="ACTIVO" th:selected="${pos.estado.name() == 'ACTIVO'}" style="color: var(--accent-gold, #C5A059); font-weight: bold; background-color: #fff;">Activo: punto de venta activo</option>
+                                                            <option value="EN_AGENDA" th:selected="${pos.estado.name() == 'EN_AGENDA'}" style="background-color: #fff; color: #000;">En agenda: puntos de venta futuros</option>
+                                                            <option value="CERRADO" th:selected="${pos.estado.name() == 'CERRADO'}" style="color: var(--neutral-gray, #8A8580); background-color: #fff;">Cerrado: punto de venta activo pero cerrado temporalmente por x motivos</option>
+                                                            <option value="FINALIZADO" th:selected="${pos.estado.name() == 'FINALIZADO'}" style="color: var(--neutral-gray, #8A8580); background-color: #fff;">Finalizado: punto de venta que terminó y no vuelve más, pero queda archivado que existió en el pasado</option>
+                                                        </select>
+                                                    </form>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a th:href="@{/admin/pos/{id}(id=${pos.id})}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        title="Panel de Logística"><i class="bi bi-box-seam"></i></a>
+                                                    <button class="btn btn-sm btn-outline-secondary"
+                                                        title="Editar Detalles"><i
+                                                            class="bi bi-pencil-square"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr th:if="${puntosVenta.empty}">
+                                                <td colspan="4" class="text-center text-muted py-4">No hay puntos de
+                                                    venta registrados.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Crear POS Tab -->
+                            <div class="tab-pane fade" id="crear-pos" role="tabpanel" aria-labelledby="crear-tab">
+                                <form action="/admin/pos/crear" method="post">
+                                    <!-- Fila 1: Nombre | Ubicación -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="nombrePos" class="form-label fw-bold text-dark">Nombre del Punto
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="nombrePos" name="nombre"
+                                                placeholder="Ej. Feria Artesanos Algarrobo" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="ubicacionPos" class="form-label fw-bold text-dark">Ubicación
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="ubicacionPos" name="ubicacion"
+                                                placeholder="Ej. Stand 4, Plaza Central" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 2: Teléfono | Tipo de Punto -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="telefonoPos" class="form-label fw-bold text-dark">Teléfono de
+                                                Contacto</label>
+                                            <input type="text" class="form-control" id="telefonoPos" name="telefono"
+                                                placeholder="Ej. +56912345678">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="tipoPunto" class="form-label fw-bold text-dark">Tipo de Punto
+                                                <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="tipoPunto" name="tipoPunto" required>
+                                                <option value="EVENTO_TEMPORAL">Evento Temporal</option>
+                                                <option value="PERMANENTE">Permanente</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 3: Vendedores -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="vendedorPrincipal" class="form-label fw-bold text-dark">Vendedor
+                                                Principal</label>
+                                            <select class="form-select mb-2" id="vendedorPrincipal" name="vendedorId">
+                                                <option value="">-- Seleccionar --</option>
+                                                <option th:each="vendedor : ${vendedores}" th:value="${vendedor.id}"
+                                                    th:text="${vendedor.nombreCompleto}"></option>
+                                            </select>
+                                            <input type="text" class="form-control form-control-sm"
+                                                id="nombreResponsableTurno" name="nombreResponsableTurno"
+                                                placeholder="Responsable / Reemplazo (Ej. María G. - Reemplazo)">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="asistente" class="form-label fw-bold text-dark">Asistente /
+                                                Apoyo</label>
+                                            <select class="form-select" id="asistente" name="asistenteId">
+                                                <option value="">-- Opcional --</option>
+                                                <option th:each="vendedor : ${vendedores}" th:value="${vendedor.id}"
+                                                    th:text="${vendedor.nombreCompleto}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 4: Finanzas -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="fondoCajaInicial" class="form-label fw-bold text-dark">Fondo
+                                                Caja Inicial ($)</label>
+                                            <input type="number" step="0.01" class="form-control" id="fondoCajaInicial"
+                                                name="fondoCajaInicial" placeholder="0" value="0.0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="metaVentas" class="form-label fw-bold text-dark">Meta de Ventas
+                                                ($)</label>
+                                            <input type="number" step="0.01" class="form-control" id="metaVentas"
+                                                name="metaVentas" placeholder="0" value="0.0">
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila 5: CRO & Alertas -->
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <label for="umbralStockCritico" class="form-label fw-bold text-dark">Alerta
+                                                Stock Crítico (unid.)</label>
+                                            <input type="number" class="form-control" id="umbralStockCritico"
+                                                name="umbralStockCritico" value="5" min="1">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="utmCampana" class="form-label fw-bold text-dark">Tag de Campaña
+                                                / UTM</label>
+                                            <input type="text" class="form-control" id="utmCampana" name="utmCampana"
+                                                placeholder="Ej. summer_feria_2026">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end border-top pt-3">
+                                        <button type="submit" class="btn btn-danger px-4 shadow-sm"
+                                            style="background-color: var(--cta-danger-red, #D6012C); border-color: var(--cta-danger-red, #D6012C);"><i
+                                                class="bi bi-save me-1"></i> Crear Punto de Venta</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Gestión Vendedores Tab -->
+                            <div class="tab-pane fade" id="gestion-vendedores" role="tabpanel"
+                                aria-labelledby="vendedores-tab">
+                                <div class="row g-4">
+                                    <div class="col-md-5">
+                                        <h6 class="fw-bold mb-3 border-bottom pb-2"
+                                            style="color: var(--brand-brown, #5A4A3F);"><i
+                                                class="bi bi-person-plus me-2"></i>Registrar Vendedor</h6>
+                                        <form action="/admin/pos/vendedor/crear" method="post">
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-muted">Nombre
+                                                    Completo</label>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="nombreCompleto" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-muted">Email
+                                                    (Usuario)</label>
+                                                <input type="email" class="form-control form-control-sm" name="email"
+                                                    required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-muted">Contraseña</label>
+                                                <input type="password" class="form-control form-control-sm"
+                                                    name="password" required>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-sm text-white"
+                                                    style="background-color: var(--cta-danger-red, #D6012C);">Registrar
+                                                    Usuario</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <h6 class="fw-bold mb-3 border-bottom pb-2"
+                                            style="color: var(--brand-brown, #5A4A3F);"><i
+                                                class="bi bi-card-checklist me-2"></i>Personal Activo</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover border">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Nombre</th>
+                                                        <th>Email</th>
+                                                        <th class="text-center">Rol</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="vendedor : ${vendedores}">
+                                                        <td class="fw-bold" th:text="${vendedor.nombreCompleto}"></td>
+                                                        <td class="text-muted" th:text="${vendedor.email}"></td>
+                                                        <td class="text-center"><span
+                                                                class="badge bg-primary">VENDEDOR</span></td>
+                                                    </tr>
+                                                    <tr th:if="${vendedores.empty}">
+                                                        <td colspan="3" class="text-center text-muted py-3">No hay
+                                                            vendedores registrados.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

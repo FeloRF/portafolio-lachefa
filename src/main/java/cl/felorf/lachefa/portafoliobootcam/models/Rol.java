@@ -7,5 +7,6 @@ package cl.felorf.lachefa.portafoliobootcam.models;
  */
 public enum Rol {
 	ADMIN, // Dueño/Gestor: Acceso a CRUD y Ventas.
-	CLIENTE // Comprador: Acceso a Carrito e Historial personal.
+	CLIENTE, // Comprador: Acceso a Carrito e Historial personal.
+	VENDEDOR // Vendedor de POS físico
 }

@@ -3,7 +3,12 @@ package cl.felorf.lachefa.portafoliobootcam.controller;
 import cl.felorf.lachefa.portafoliobootcam.models.Producto;
 import cl.felorf.lachefa.portafoliobootcam.models.Receta;
 import cl.felorf.lachefa.portafoliobootcam.models.Venta;
+import cl.felorf.lachefa.portafoliobootcam.models.PuntoVenta;
+import cl.felorf.lachefa.portafoliobootcam.models.Usuario;
+import cl.felorf.lachefa.portafoliobootcam.models.Rol;
 import cl.felorf.lachefa.portafoliobootcam.repositories.VentaRepository;
+import cl.felorf.lachefa.portafoliobootcam.repositories.PuntoVentaRepository;
+import cl.felorf.lachefa.portafoliobootcam.repositories.UsuarioRepository;
 import cl.felorf.lachefa.portafoliobootcam.services.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -22,10 +27,15 @@ public class ProductoController {
     
     private final ProductoService productoService;
     private final VentaRepository ventaRepository;
+    private final PuntoVentaRepository puntoVentaRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public ProductoController(ProductoService productoService, VentaRepository ventaRepository) {
+    public ProductoController(ProductoService productoService, VentaRepository ventaRepository, 
+                              PuntoVentaRepository puntoVentaRepository, UsuarioRepository usuarioRepository) {
         this.productoService = productoService;
         this.ventaRepository = ventaRepository;
+        this.puntoVentaRepository = puntoVentaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     /**
@@ -62,11 +72,18 @@ public class ProductoController {
 
         Map<Producto, Long> rankingVentas = productoService.obtenerRankingProductos();
 
+        long posActivos = puntoVentaRepository.countByEstado(PuntoVenta.EstadoPOS.ACTIVO);
+        List<PuntoVenta> puntosVenta = puntoVentaRepository.findByEstadoNot(PuntoVenta.EstadoPOS.FINALIZADO);
+        List<Usuario> vendedores = usuarioRepository.findByRol(Rol.VENDEDOR);
+
         // Inyección de atributos al modelo
         model.addAttribute("productos", productos);
         model.addAttribute("valorBodega", valorBodega);
         model.addAttribute("totalVentas", totalVentas);
         model.addAttribute("variedad", variedad);
+        model.addAttribute("posActivos", posActivos);
+        model.addAttribute("puntosVenta", puntosVenta);
+        model.addAttribute("vendedores", vendedores);
         model.addAttribute("criticos", criticos);
         model.addAttribute("ranking", rankingVentas);
         model.addAttribute("titulo", "Consola de Administración - La Chefa");

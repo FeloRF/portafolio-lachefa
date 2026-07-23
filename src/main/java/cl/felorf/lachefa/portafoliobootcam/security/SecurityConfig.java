@@ -23,7 +23,7 @@ public class SecurityConfig {
 	            .requestMatchers("/catalogoLaChefa/**").permitAll()
 	            
 	            // Prioridad 2: Protegido
-	            .requestMatchers("/nueva-receta", "/productos/**", "/ventas/**").hasAuthority("ADMIN")
+	            .requestMatchers("/nueva-receta", "/productos/**", "/ventas/**", "/admin/**").hasAuthority("ADMIN")
 	            
 	            .anyRequest().authenticated()
 	        )
